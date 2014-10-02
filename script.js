@@ -182,6 +182,7 @@ $(document).ready(function() {
   var creationMonth = new Date(creationDate).getMonth() + 1;
   var countMonths = currentMonth - creationMonth;
   var monthNames = [ '', 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.' ];
+  var monthLenths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];                                                         
   var functionArray = [];
   var createdIssues = [];
   var closedIssues = [];
@@ -189,7 +190,7 @@ $(document).ready(function() {
   for (var i = 0; i <= countMonths; i++) {
     var loopMonth = parseInt(creationMonth) + i;
     var loopDate1 = new Date().getFullYear() + '-' + (loopMonth > 9 ? loopMonth : '0' + loopMonth) + '-01';
-    var loopDate2 = new Date().getFullYear() + '-' + (loopMonth + 1 > 9 ? loopMonth + 1 : '0' + (loopMonth + 1)) + '-01';
+    var loopDate2 = new Date().getFullYear() + '-' + (loopMonth > 9 ? loopMonth : '0' + loopMonth) + '-' + monthLenths[loopMonth];
     (function(i, loopDate1, loopDate2) {      
       functionArray.push(
         function(done) {
@@ -277,7 +278,7 @@ $(document).ready(function() {
         yAxis: {
           min: 0,
           title: {
-              text: 'Issues count'
+            text: 'Issues count'
           }
         },
         plotOptions: {
