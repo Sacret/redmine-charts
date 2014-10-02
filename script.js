@@ -3,7 +3,7 @@ $(document).ready(function() {
   var key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91';
   var creationDate = '2014-02-18';
   // project info
-/*  $.ajax({
+ /* $.ajax({
     type: 'GET',
     crossDomain: true,
     url: site + 'projects/142.json?key=' + key + '&include=trackers,issue_categories',
@@ -181,57 +181,57 @@ $(document).ready(function() {
   var currentMonth = new Date().getMonth() + 1;
   var creationMonth = new Date(creationDate).getMonth() + 1;
   var countMonths = currentMonth - creationMonth;
-  var issuesPerMonth = [];
   var monthNames = [ '', 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.' ];
-  var j = 0, i = 0;
-  while (i < 20) {
-    console.log(i);
-    i++;
-  }
-  var k = 0;
-  while (k < 100) {
-    console.log(k);
-    k++;
-    var loopMonth = parseInt(creationMonth) + i + 1;
-    var loopDate = new Date().getFullYear() + '-' + (loopMonth > 9 ? loopMonth : '0' + loopMonth) + '-01';
-    issuesPerMonth[i] = [];
-    $.ajax({
-      type: 'GET',
-      crossDomain: true,
-      url: site + 'issues.json?project_id=142&limit=1&key=' + key + '&created_on=%3E%3C' + creationDate + '|' + loopDate,
-      dataType: 'jsonp',
-      success: function(data) {
-        if (data) {
-          console.log(i + '-1-' + data.total_count);
-          var currentState = parseInt(100 / 2 / countMonths) * (i + 1);
-          $('#progress-info .progress-bar').width(currentState + '%');
-          $('#progress-info .progress-bar').attr('aria-valuenow', currentState);
-          //issuesPerMonth[i].created = data.total_count;                    
-        }        
-      },
-      complete: function(xhr,status) {
+  var functionArray = [];
+  for (var i = 0; i <= countMonths; i++) {
+    var loopMonth = parseInt(creationMonth) + i;
+    var loopDate1 = new Date().getFullYear() + '-' + (loopMonth > 9 ? loopMonth : '0' + loopMonth) + '-01';
+    var loopDate2 = new Date().getFullYear() + '-' + (loopMonth + 1 > 9 ? loopMonth + 1 : '0' + (loopMonth + 1)) + '-01';
+    functionArray.push(
+      (function(i, loopDate1, loopDate2) {      
         $.ajax({
           type: 'GET',
           crossDomain: true,
-          url: site + 'issues.json?project_id=142&limit=1&key=' + key + '&status_id=5&updated_on=%3E%3C' + creationDate + '|' + loopDate,
+          url: site + 'issues.json?project_id=142&limit=1&key=' + key + '&f%5B%5D=status_id&op%5Bstatus_id%5D=*&f%5B%5D=created_on&op%5Bcreated_on%5D=%3D&v%5Bcreated_on=%3E%3C' + loopDate1 + '|' + loopDate2,
           dataType: 'jsonp',
           success: function(data) {
             if (data) {
-              console.log(i + '-2-' + data.total_count);
+              console.log(i + '-created-' + data.total_count);
               var currentState = parseInt(100 / 2 / countMonths) * (i + 1);
               $('#progress-info .progress-bar').width(currentState + '%');
-              $('#progress-info .progress-bar').attr('aria-valuenow', currentState);
-              //issuesPerMonth[i].closed = data.total_count;  
-              if (i == countMonths - 1) {
-                console.log(issuesPerMonth);
-              }          
+              $('#progress-info .progress-bar').attr('aria-valuenow', currentState);                
             }        
-          },
-          complete: function(xhr,status) {
-            i++;
           }
         });
-      }
-    });
+      })(i, loopDate1, loopDate2)
+    ); 
+    functionArray.push(
+      (function(i, loopDate1, loopDate2) {      
+        $.ajax({
+          type: 'GET',
+          crossDomain: true,
+          url: site + 'issues.json?project_id=142&limit=1&key=' + key + '&status_id=5&updated_on=%3E%3C' + loopDate1 + '|' + loopDate2,
+          dataType: 'jsonp',
+          success: function(data) {
+            if (data) {
+              console.log(i + '-closed-' + data.total_count);
+              var currentState = parseInt(100 / 2 / countMonths) * (i + 1);
+              $('#progress-info .progress-bar').width(currentState + '%');
+              $('#progress-info .progress-bar').attr('aria-valuenow', currentState);          
+            }        
+          }
+        }); 
+      })(i, loopDate1, loopDate2)
+    );       
   }
+  async.parallel(
+    functionArray,
+    // optional callback
+    function(err, results){
+      console.log(results);
+      alert();
+      // the results array will equal ['one','two'] even though
+      // the second function had a shorter timeout.
+    }
+  );
 });
