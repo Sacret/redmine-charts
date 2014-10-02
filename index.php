@@ -32,11 +32,16 @@
         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
       </div>
       <div id="issues-overall"></div>
-      <h1>Logoworks Per Month</h1>
+      <h1>Logoworks Issues Per Month</h1>
       <div class="progress" id="progress-issues-per-month">
         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
       </div>
       <div id="issues-per-month"></div>
+      <h1>Logoworks Today Issues</h1>
+      <div class="progress" id="progress-issues-today">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+      </div>
+      <div id="issues-today"></div>
     </div>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script type="text/javascript" src="resources/bootstrap.min.js"></script>
