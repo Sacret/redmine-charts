@@ -187,42 +187,46 @@ $(document).ready(function() {
     var loopMonth = parseInt(creationMonth) + i;
     var loopDate1 = new Date().getFullYear() + '-' + (loopMonth > 9 ? loopMonth : '0' + loopMonth) + '-01';
     var loopDate2 = new Date().getFullYear() + '-' + (loopMonth + 1 > 9 ? loopMonth + 1 : '0' + (loopMonth + 1)) + '-01';
-    functionArray.push(
-      (function(i, loopDate1, loopDate2) {      
-        $.ajax({
-          type: 'GET',
-          crossDomain: true,
-          url: site + 'issues.json?project_id=142&limit=1&key=' + key + '&f%5B%5D=status_id&op%5Bstatus_id%5D=*&f%5B%5D=created_on&op%5Bcreated_on%5D=%3D&v%5Bcreated_on=%3E%3C' + loopDate1 + '|' + loopDate2,
-          dataType: 'jsonp',
-          success: function(data) {
-            if (data) {
-              console.log(i + '-created-' + data.total_count);
-              var currentState = parseInt(100 / 2 / countMonths) * (i + 1);
-              $('#progress-info .progress-bar').width(currentState + '%');
-              $('#progress-info .progress-bar').attr('aria-valuenow', currentState);                
-            }        
-          }
-        });
-      })(i, loopDate1, loopDate2)
-    ); 
-    functionArray.push(
-      (function(i, loopDate1, loopDate2) {      
-        $.ajax({
-          type: 'GET',
-          crossDomain: true,
-          url: site + 'issues.json?project_id=142&limit=1&key=' + key + '&status_id=5&updated_on=%3E%3C' + loopDate1 + '|' + loopDate2,
-          dataType: 'jsonp',
-          success: function(data) {
-            if (data) {
-              console.log(i + '-closed-' + data.total_count);
-              var currentState = parseInt(100 / 2 / countMonths) * (i + 1);
-              $('#progress-info .progress-bar').width(currentState + '%');
-              $('#progress-info .progress-bar').attr('aria-valuenow', currentState);          
-            }        
-          }
-        }); 
-      })(i, loopDate1, loopDate2)
-    );       
+    (function(i, loopDate1, loopDate2) {      
+      functionArray.push(
+        function(done) {
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            url: site + 'issues.json?project_id=142&limit=1&key=' + key + '&f%5B%5D=status_id&op%5Bstatus_id%5D=*&f%5B%5D=created_on&op%5Bcreated_on%5D=%3D&v%5Bcreated_on=%3E%3C' + loopDate1 + '|' + loopDate2,
+            dataType: 'jsonp',
+            success: function(data) {
+              if (data) {
+                console.log(i + '-created-' + data.total_count);
+                var currentState = parseInt(100 / 2 / countMonths) * (i + 1);
+                $('#progress-info .progress-bar').width(currentState + '%');
+                $('#progress-info .progress-bar').attr('aria-valuenow', currentState);
+                done();                
+              }        
+            }
+          });
+        }
+      ); 
+      functionArray.push(
+        function(done) {
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            url: site + 'issues.json?project_id=142&limit=1&key=' + key + '&status_id=5&updated_on=%3E%3C' + loopDate1 + '|' + loopDate2,
+            dataType: 'jsonp',
+            success: function(data) {
+              if (data) {
+                console.log(i + '-closed-' + data.total_count);
+                var currentState = parseInt(100 / 2 / countMonths) * (i + 1);
+                $('#progress-info .progress-bar').width(currentState + '%');
+                $('#progress-info .progress-bar').attr('aria-valuenow', currentState);   
+                done();       
+              }        
+            }
+          }); 
+        }
+      );       
+    })(i, loopDate1, loopDate2)
   }
   async.parallel(
     functionArray,
