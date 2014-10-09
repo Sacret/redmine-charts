@@ -3,6 +3,7 @@ $(document).ready(function() {
   var key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91';
   var creationDate = '2014-02-18';
   var projectId = 142;
+  //
   // project info
   if (readCookie('logoworks-info')) {
     NextStep('#progress-info .progress-bar', 100);
@@ -17,7 +18,7 @@ $(document).ready(function() {
     $.ajax({
       type: 'GET',
       crossDomain: true,
-      url: site + 'projects/' + projectId + '.json?key=' + key + '&include=trackers,issue_categories',
+      url: site + 'projects/' + projectId + '.json?key=' + key + '&include=trackers',
       dataType: 'jsonp',
       success: function(data) {
         if (data) {
@@ -46,9 +47,8 @@ $(document).ready(function() {
       }
     });
   }
+  //
   // overall issues info
-  var countNew, countAssigned, countInProgress, countDeferred, countResolved,
-    countReadyToDeploy, countClosed, countRejected;
   var issueStatuses = [];
   var functionIssueStatuses = [];
   $.ajax({
@@ -73,7 +73,7 @@ $(document).ready(function() {
                       NextStep('#progress-issues-per-month .progress-bar', issueStep);
                       issueStatuses.push([
                         data.issue_statuses[i].name + ' (' + dataNew.total_count + ')',
-                        dataNew.total_count
+                        dataNew.total_count,
                       ]);
                       done();
                     }
@@ -99,6 +99,17 @@ $(document).ready(function() {
               tooltip: {
                 pointFormat: 'Status share: <b>{point.percentage:.1f}%</b>'
               },
+              plotOptions: {
+                pie: {
+                  allowPointSelect: true,
+                  cursor: 'pointer',
+                  dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                  },
+                  showInLegend: true
+                }
+              },
               series: [{
                 type: 'pie',
                 name: 'Issues share',
@@ -110,6 +121,7 @@ $(document).ready(function() {
       }
     }
   });
+  //
   // issues per month
   var currentMonth = new Date().getMonth() + 1;
   var creationMonth = new Date(creationDate).getMonth() + 1;
@@ -177,7 +189,7 @@ $(document).ready(function() {
                   createCookie('logoworks-closed-' + i, data.total_count, 30);
                   closedIssues.push({
                     number: i,
-                    data: data.total_count
+                    data: data.total_count,
                   });
                   done();
                 }
@@ -326,18 +338,21 @@ $(document).ready(function() {
       });
     }
   );
+  //
   // sorting function
   function SortByNumber(a, b){
     var aNumber = a.number;
     var bNumber = b.number;
     return ((aNumber < bNumber) ? -1 : ((aNumber > bNumber) ? 1 : 0));
   }
+  //
   // next step for progressbar
   function NextStep(object, stateStep) {
     var currentState = parseInt($(object).attr('aria-valuenow')) + stateStep;
     $(object).width(currentState + '%');
     $(object).attr('aria-valuenow', currentState);
   }
+  //
   // set cookie
   function createCookie(name, value, days) {
     if (days) {
@@ -350,6 +365,7 @@ $(document).ready(function() {
     }
     document.cookie = name + '=' + value + expires + '; path=/';
   }
+  //
   // get cookie
   function readCookie(name) {
     var nameEQ = name + '=';
