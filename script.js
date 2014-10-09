@@ -246,7 +246,10 @@ $(document).ready(function() {
         plotOptions: {
           column: {
             pointPadding: 0.2,
-            borderWidth: 0
+            borderWidth: 0,
+            dataLabels: {
+              enabled: true
+            }
           }
         },
         series: series
@@ -319,7 +322,10 @@ $(document).ready(function() {
           column: {
             grouping: false,
             shadow: false,
-            borderWidth: 0
+            borderWidth: 0,
+            dataLabels: {
+              enabled: true
+            }
           }
         },
         series: [{
@@ -330,7 +336,7 @@ $(document).ready(function() {
           pointPlacement: -0.2
         }, {
           name: 'Closed',
-          color: 'rgba(227,227,227,.9)',
+          color: 'rgba(153,214,13,.9)',
           data: [countClosedToday],
           pointPadding: 0.4,
           pointPlacement: -0.2
