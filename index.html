@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="charts">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,12 +39,12 @@
           <div class="panel panel-default">
             <div class="panel-heading">Sign in and try it</div>
             <div class="panel-body">
-              <form class="form" role="form" novalidate>
+              <form class="form" role="form" novalidate ng-controller="ChartsController as chartsCtrl" ng-submit="chartsCtrl.getProjects()">
                 <div class="form-group">
-                  <input type="url" class="form-control" id="site-url" placeholder="Site Url">
+                  <input type="url" class="form-control" id="site-url" placeholder="Site Url" ng-model="user.siteUrl">
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control" id="api-key" placeholder="API Key">
+                  <input type="password" class="form-control" id="api-key" placeholder="API Key" ng-model="user.apiKey">
                 </div>
                 <div class="form-group">
                   <div class="checkbox">
@@ -120,6 +120,8 @@
     <script type="text/javascript" src="bower_components/highcharts-release/highcharts.js"></script>
     <script type="text/javascript" src="bower_components/async/lib/async.js"></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/querystring/querystring.js"></script>
+    <script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
     <script type="text/javascript" src="public/js/app.js"></script>
   </body>
 </html>
