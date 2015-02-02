@@ -1,6 +1,6 @@
 app = angular.module('charts', [])
 
-app.factory 'Api', ['$http', ($http) ->
+app.factory 'Api', ['$http', '$window', ($http, $window) ->
   basePath: 'http://redmine.pfrus.com'
   key: ''
 
@@ -8,23 +8,20 @@ app.factory 'Api', ['$http', ($http) ->
     _.assign params,
       key: @key
       callback: 'JSON_CALLBACK'
-    encodedParams = querystring.encode(params)
-    ###$http
-      url: '#{ @basePath }/#{ path }.json?#{ encodedParams }'
-      method: method###
-    debugger
-    url1 = 'http://redmine.pfrus.com/projects.json?key=261e9890fc1b2aa799f942ff2d6daa9fa691bd91&callback=JSON_CALLBACK'
-    url2 = '#{ @basePath }/#{ path }.json?#{ encodedParams }'
-    debugger
+
+    c = $window.angular.callbacks.counter.toString(36)
+    $window['angularcallbacks_' + c] = (data) ->
+      $window.angular.callbacks['_' + c](data)
+      delete $window['angularcallbacks_' + c]
+
     $http
-      url: url1
+      url: "#{ @basePath }/#{ path }.json"
+      params: params
       method: 'jsonp'
       cache: true
-      crossDomain: true
 
   get: (path, params) ->
     @_request('GET', path, params)
-
 ]
 
 app.controller 'ChartsController', ['Api', (Api) ->
