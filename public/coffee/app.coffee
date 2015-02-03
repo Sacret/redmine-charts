@@ -32,5 +32,6 @@ app.controller 'ChartsController', ['Api', (Api) ->
     Api.key = @key
     Api.get('projects')
       .then (data) ->
-        @projects = data
+        @projects = data.data.projects
+        console.log 'data'
 ]
