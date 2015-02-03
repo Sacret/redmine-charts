@@ -33,7 +33,7 @@
     </nav>
 
     <div class="container">
-      <div class="row welcome-screen" ng-include="'login-form.html'">
+      <div class="row welcome-screen" ng-include="'public/templates/login-form.html'">
       </div>
       <div class="row projects-screen" ng-controller="ChartsController as chartsCtrl" ng-show="chartsCtrl.projects.length">
         <div ng-repeat="project in chartsCtrl.projects">
