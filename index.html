@@ -8,45 +8,12 @@
     <link href="public/css/style.css" rel="stylesheet">
   </head>
   <body>
-    <nav class="navbar navbar-inverse" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Redmine Charts</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Username <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">Account</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <div class="container">
-      <div class="row welcome-screen" ng-include="'public/templates/login-form.html'">
-      </div>
-      <div class="row projects-screen" ng-controller="ChartsController as chartsCtrl" ng-show="chartsCtrl.projects.length">
-        <div ng-repeat="project in chartsCtrl.projects">
-          {{project.name}}
-        </div>
-      </div>
+    <div ng-include="'public/templates/header.html'"></div>
+    <div class="container" ng-controller="ChartsController as chartsCtrl">
+      <div ng-include="'public/templates/login-form.html'" ng-hide="projects.length"></div>
+      <project-names ng-show="projects.length"></project-names>
     </div>
-
-    <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
-      <div class="container">
-        <p class="navbar-text">Signed in as Mark Otto</p>
-      </div>
-    </nav>
+    <div ng-include="'public/templates/footer.html'"></div>
 
     <!-- <div class="container">
       <div class="progress" id="progress-info">
@@ -103,5 +70,6 @@
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
     <script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
     <script type="text/javascript" src="public/js/app.js"></script>
+    <script type="text/javascript" src="public/js/projects.js"></script>
   </body>
 </html>
