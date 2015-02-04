@@ -1,5 +1,5 @@
 <div class="row welcome-screen">
-  <h1>Welcome!</h1>
+  <h1 class="text-center">Welcome!</h1>
   <div class="col-md-4 col-md-offset-4">
     <div class="panel panel-default">
       <div class="panel-heading">Sign in and try it</div>
@@ -16,10 +16,9 @@
               <label>
                 <input type="checkbox"> Remember me
               </label>
-              <button type="submit" class="btn btn-primary pull-right">Sign in</button>
+              <button type="submit" class="btn btn-primary pull-right" ng-class="{ disabled:!loginForm.$valid }">Sign in</button>
             </div>
           </div>
-          <div>Form is {{loginForm.$valid}}</div>
         </form>
       </div>
     </div>

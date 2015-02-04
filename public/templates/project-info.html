@@ -1,0 +1,13 @@
+<div class="panel panel-default" ng-show="currentProject">
+  <div class="panel-heading">Project Info</div>
+  <div class="panel-body">
+    <dl>
+      <dt>Name</dt>
+      <dd>{{ currentProject.name }}</dd>
+      <dt ng-show="currentProject.description">Description</dt>
+      <dd ng-show="currentProject.description">{{ currentProject.description }}</dd>
+      <dt>Created</dt>
+      <dd>{{ currentProject.created_on | date:'yyyy-MM-dd HH:mm' }}</dd>
+    </dl>
+  </div>
+</div>

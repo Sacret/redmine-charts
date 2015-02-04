@@ -1,5 +1,11 @@
-<ul>
-  <li ng-repeat="project in projects">
-    <a href="#">{{project.name}}</a></li>
+<ul class="list-group">
+  <li class="list-group-item active">
+    <span class="badge">{{ projects.length }}</span>My projects
   </li>
+  <a href="#" class="list-group-item"
+    ng-repeat="project in projects"
+    ng-click="chartsCtrl.setSelectedProject(project)"
+    ng-class="{ 'list-group-item-info' : isSelectedProject(project.id) }">
+    {{ project.name }}
+  </a>
 </ul>

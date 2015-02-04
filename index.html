@@ -9,9 +9,12 @@
   </head>
   <body>
     <div ng-include="'public/templates/header.html'"></div>
-    <div class="container" ng-controller="ChartsController as chartsCtrl">
-      <div ng-include="'public/templates/login-form.html'" ng-hide="projects.length"></div>
-      <project-names ng-show="projects.length"></project-names>
+    <div class="container-fluid" ng-controller="ChartsController as chartsCtrl">
+      <div class="container" ng-include="'public/templates/login-form.html'" ng-hide="projects.length"></div>
+      <div class="row">
+        <project-names ng-show="projects.length" class="col-md-3 col-xs-12"></project-names>
+        <project-info ng-show="projects.length" class="col-md-9 col-xs-12"></project-info>
+      </div>
     </div>
     <div ng-include="'public/templates/footer.html'"></div>
 

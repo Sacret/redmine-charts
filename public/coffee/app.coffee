@@ -18,6 +18,7 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
       url: "#{ @basePath }/#{ path }.json"
       params: params
       method: method
+      limit: 100
 
   get: (path, params) ->
     @_request('jsonp', path, params)
@@ -33,5 +34,11 @@ app.controller 'ChartsController', ['Api', '$scope', (Api, $scope) ->
     Api.get('projects')
       .then (data) ->
         $scope.projects = data.data.projects
-        @projects = data.data.projects
+
+  @setSelectedProject = (project) =>
+    $scope.currentProject = project
+    console.log project
+
+  @isSelectedProject = (projectId) =>
+    $scope.currentProject.id == projectId
 ]
