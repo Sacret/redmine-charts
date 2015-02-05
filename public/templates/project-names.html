@@ -5,7 +5,7 @@
   <a href="#" class="list-group-item"
     ng-repeat="project in projects"
     ng-click="chartsCtrl.setSelectedProject(project)"
-    ng-class="{ 'list-group-item-info' : isSelectedProject(project.id) }">
+    ng-class="{ 'list-group-item-info' : chartsCtrl.isSelectedProject(project) }">
     {{ project.name }}
   </a>
 </ul>

@@ -5,18 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Redmine Charts</title>
-    <link href="public/css/style.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
   </head>
   <body>
-    <div ng-include="'public/templates/header.html'"></div>
+    <div ng-include="'templates/header.html'"></div>
     <div class="container-fluid" ng-controller="ChartsController as chartsCtrl">
-      <div class="container" ng-include="'public/templates/login-form.html'" ng-hide="projects.length"></div>
+      <div class="container" ng-include="'templates/login-form.html'" ng-hide="projects.length"></div>
       <div class="row">
         <project-names ng-show="projects.length" class="col-md-3 col-xs-12"></project-names>
         <project-info ng-show="projects.length" class="col-md-9 col-xs-12"></project-info>
       </div>
     </div>
-    <div ng-include="'public/templates/footer.html'"></div>
+    <div ng-include="'templates/footer.html'"></div>
 
     <!-- <div class="container">
       <div class="progress" id="progress-info">
@@ -72,7 +72,7 @@
     <script type="text/javascript" src="bower_components/async/lib/async.js"></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
     <script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
-    <script type="text/javascript" src="public/js/app.js"></script>
-    <script type="text/javascript" src="public/js/projects.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/projects.js"></script>
   </body>
 </html>
