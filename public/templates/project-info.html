@@ -1,7 +1,8 @@
 <div class="panel panel-default" ng-show="currentProject">
   <div class="panel-heading">General Info</div>
   <div class="panel-body">
-    <dl>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject" />
+    <dl ng-show="currentProject">
       <dt>Name</dt>
       <dd>{{ currentProject.name }}</dd>
       <dt ng-show="currentProject.description">Description</dt>
@@ -11,21 +12,35 @@
     </dl>
   </div>
 </div>
-<div class="panel panel-default" ng-show="currentProject.issuesbyStatuses.length">
+
+<div class="panel panel-default">
   <div class="panel-heading">Overall Issues</div>
   <div class="panel-body">
-    <div id="issues-overall"></div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.issuesbyStatuses.length" />
+    <div id="issues-overall" ng-show="currentProject.issuesbyStatuses.length"></div>
   </div>
 </div>
-<div class="panel panel-default" ng-show="currentProject.issuesPerMonth.length">
+
+<div class="panel panel-default">
   <div class="panel-heading">Issues Per Month</div>
   <div class="panel-body">
-    <div id="issues-per-month"></div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.issuesPerMonth.length" />
+    <div id="issues-per-month" ng-show="currentProject.issuesPerMonth.length"></div>
   </div>
 </div>
-<div class="panel panel-default" ng-show="currentProject.issuesToday.length">
+
+<div class="panel panel-default">
   <div class="panel-heading">Today Issues</div>
   <div class="panel-body">
-    <div id="issues-today"></div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.issuesToday.length" />
+    <div id="issues-today" ng-show="currentProject.issuesToday.length"></div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">My Progress</div>
+  <div class="panel-body">
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.myProgress" />
+    <div id="issues-today" ng-show="currentProject.myProgress"></div>
   </div>
 </div>

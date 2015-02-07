@@ -13,7 +13,7 @@
       <div class="container" ng-include="'templates/login-form.html'" ng-hide="projects.length"></div>
       <div class="row">
         <project-names ng-show="projects.length" class="col-md-3 col-xs-12"></project-names>
-        <project-info ng-show="projects.length" class="col-md-9 col-xs-12"></project-info>
+        <project-info ng-show="currentProject" class="col-md-9 col-xs-12"></project-info>
       </div>
     </div>
     <div ng-include="'templates/footer.html'"></div>
