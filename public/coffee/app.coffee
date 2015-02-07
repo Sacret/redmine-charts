@@ -13,9 +13,8 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
       params: params
       method: method
     .then (data) ->
-      result =
-        data: data.data[path]
-        count: data.data.total_count
+      data: data.data[path]
+      count: data.data.total_count
 
   get: (path, params) ->
     @_request('get', path, params)
@@ -87,50 +86,50 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
         ]
 
   @getTodayIssues = ->
+    return unless $scope.currentProject?
     today = $filter('date')(new Date(), 'yyyy-MM-dd')
     Api.key = $scope.key
-    Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: '*', created_on: today)
-      .then (todayIssuesCreated) ->
-        $scope.currentProject?.todayIssuesCreatedCount = todayIssuesCreated.count
-        Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: 'closed', updated_on: today)
-      .then (todayIssuesClosed) ->
-        $scope.currentProject?.todayIssuesClosedCount = todayIssuesClosed.count
-      .then (todayIssuesClosedCount) ->
-        $scope.currentProject?.todayIssuesLoaded = true
-        $scope.currentProject?.todayIssuesCount = $scope.currentProject.todayIssuesCreatedCount + $scope.currentProject.todayIssuesClosedCount
-        $chart = $('#issues-today')
-        $chart.highcharts
-          chart:
-            type: 'column'
+    $q.all([
+      Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: '*', created_on: today)
+      Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: 'closed', updated_on: today)
+    ]).then ([todayIssuesCreated, todayIssuesClosed]) ->
+      $scope.currentProject.todayIssuesCreatedCount = todayIssuesCreated.count
+      $scope.currentProject.todayIssuesClosedCount = todayIssuesClosed.count
+      $scope.currentProject.todayIssuesLoaded = true
+      $scope.currentProject.todayIssuesCount = todayIssuesCreated.count + todayIssuesClosed.count
+      $chart = $('#issues-today')
+      $chart.highcharts
+        chart:
+          type: 'column'
+        title:
+          text: null
+        xAxis:
+          categories: [
+            "Today Issues (#{ $scope.currentProject.todayIssuesCount })"
+          ]
+        yAxis: [
+          min: 0
           title:
-            text: null
-          xAxis:
-            categories: [
-              "Today Issues (#{ $scope.currentProject.todayIssuesCount })"
-            ]
-          yAxis: [
-            min: 0
-            title:
-              text: 'Issues'
-          ]
-          legend:
+            text: 'Issues'
+        ]
+        legend:
+          shadow: false
+        tooltip:
+          shared: true
+        plotOptions:
+          column:
             shadow: false
-          tooltip:
-            shared: true
-          plotOptions:
-            column:
-              shadow: false
-              borderWidth: 0
-              dataLabels:
-                enabled: true
-          series: [
-            name: 'Created'
-            color: 'rgba(165,170,217,1)'
-            data: [$scope.currentProject.todayIssuesCreatedCount]
-          ,
-            name: 'Closed'
-            color: 'rgba(153,214,13,.9)'
-            data: [$scope.currentProject.todayIssuesClosedCount]
-          ]
-        chart = $chart.highcharts()
+            borderWidth: 0
+            dataLabels:
+              enabled: true
+        series: [
+          name: 'Created'
+          color: 'rgba(165,170,217,1)'
+          data: [todayIssuesCreated.count]
+        ,
+          name: 'Closed'
+          color: 'rgba(153,214,13,.9)'
+          data: [todayIssuesClosed.count]
+        ]
+      chart = $chart.highcharts()
 ]
