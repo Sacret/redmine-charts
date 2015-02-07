@@ -3,6 +3,7 @@ path = require 'path'
 gulp = require 'gulp'
 less = require 'gulp-less'
 coffee = require 'gulp-coffee'
+combiner = require 'stream-combiner2'
 
 paths =
   less: './public/less/**/*.less'
@@ -11,10 +12,12 @@ paths =
   js: './public/js'
 
 gulp.task 'less', ->
-  gulp.src(paths.less)
-    .pipe less
-      paths: [path.join(__dirname, './bower_components/bootstrap/less')]
-    .pipe gulp.dest(paths.css)
+  combiner [
+    gulp.src(paths.less)
+    less
+      paths: [path.join(__dirname, './public/bower_components/bootstrap/less')]
+    gulp.dest(paths.css)
+  ]
 
 gulp.task 'coffee', ->
   gulp.src(paths.coffee)
