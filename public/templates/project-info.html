@@ -14,7 +14,7 @@
 </div>
 
 <div class="panel panel-default">
-  <div class="panel-heading">Overall Issues</div>
+  <div class="panel-heading">Overall Issues <span ng-show="currentProject.issuesOverallCount">({{ currentProject.issuesOverallCount }})</span></div>
   <div class="panel-body">
     <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.issuesbyStatuses.length" />
     <div id="issues-overall" ng-show="currentProject.issuesbyStatuses.length"></div>
@@ -24,8 +24,8 @@
 <div class="panel panel-default">
   <div class="panel-heading">Issues Per Month</div>
   <div class="panel-body">
-    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.issuesPerMonth.length" />
-    <div id="issues-per-month" ng-show="currentProject.issuesPerMonth.length"></div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.perMonthIssuesLoaded" />
+    <div id="issues-per-month" ng-show="currentProject.perMonthIssuesLoaded"></div>
   </div>
 </div>
 

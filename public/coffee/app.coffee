@@ -38,11 +38,13 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
     $scope.currentProject = project
     @getIssueStatuses()
     @getTodayIssues()
+    @getIssuesPerMonth()
 
   @isSelectedProject = (project) ->
     $scope.currentProject?.id == project.id
 
   @getIssueStatuses = =>
+    return unless $scope.currentProject?
     Api.key = $scope.key
     Api.get('issue_statuses')
       .then (issueStatuses) =>
@@ -50,7 +52,10 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
         $q.all $scope.statuses.map (status) =>
           @getIssuesByStatus($scope.currentProject, status)
       .then (issuesbyStatuses) =>
-        $scope.currentProject?.issuesbyStatuses = issuesbyStatuses
+        $scope.currentProject.issuesbyStatuses = issuesbyStatuses
+        $scope.currentProject.issuesOverallCount = _(issuesbyStatuses)
+          .pluck('1')
+          .reduce (a, b) -> a + b
         $chart = $('#issues-overall')
         $chart.highcharts
           chart:
@@ -79,11 +84,10 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
   @getIssuesByStatus = (project, status) ->
     Api.key = $scope.key
     Api.get('issues', project_id: project.id, status_id: status.id, limit: 1)
-      .then (issuesByStatus) ->
-        result = [
-          "#{ status.name } (#{ issuesByStatus.count })"
-          issuesByStatus.count
-        ]
+      .then (issuesByStatus) -> [
+        "#{ status.name } (#{ issuesByStatus.count })"
+        issuesByStatus.count
+      ]
 
   @getTodayIssues = ->
     return unless $scope.currentProject?
@@ -132,4 +136,55 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
           data: [todayIssuesClosed.count]
         ]
       chart = $chart.highcharts()
+
+  @getIssuesPerMonth = ->
+    return unless $scope.currentProject?
+    startDate = moment().startOf('year')
+    endDate = moment()
+    range = moment().range(startDate, endDate)
+    dateRanges = []
+    range.by 'months', (start) ->
+      end = moment.min(start.clone().endOf('month'), endDate)
+      dateRanges.push
+        start: start.format('YYYY-MM-DD')
+        end: end.format('YYYY-MM-DD')
+        monthName: start.format('MMM')
+
+    $q.all dateRanges.map ({start, end}) ->
+      q = "><#{ start }|#{ end }"
+      $q.all [
+        Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: '*', created_on: q)
+        Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: 'closed', updated_on: q)
+      ]
+    .then (issuesPerMonth) ->
+      $scope.currentProject.perMonthIssuesLoaded = true
+      series = [
+        name: 'Created Issues'
+        data: _(issuesPerMonth).pluck('0').pluck('count').value()
+      ,
+        name: 'Closed Issues'
+        data: _(issuesPerMonth).pluck('1').pluck('count').value()
+      ]
+
+      $chart = $('#issues-per-month')
+      $chart.highcharts
+        chart:
+          type: 'column'
+        title:
+          text: null
+        xAxis:
+          categories: _.pluck(dateRanges, 'monthName')
+        yAxis: [
+          min: 0
+          title:
+            text: 'Issues count'
+        ]
+        plotOptions:
+          pointPadding: 0.2
+          borderWidth: 0
+          dataLabels:
+            enabled: true
+        series: series
+      chart = $chart.highcharts()
+
 ]
