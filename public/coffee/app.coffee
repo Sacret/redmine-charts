@@ -36,6 +36,15 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
 
   @setSelectedProject = (project) =>
     $scope.currentProject = project
+    $scope.currentProject.startDate = moment().startOf('year').format('MMM/YY')
+    $scope.currentProject.endDate = moment().format('MMM/YY')
+    $('#datepicker').datepicker('remove')
+    $('#datepicker').datepicker(
+      format: 'M/yy'
+      minViewMode: 1
+      startDate: moment(project.created_on).format('MMM/YY')
+      endDate: $scope.currentProject.endDate
+    )
     @getIssueStatuses()
     @getTodayIssues()
     @getIssuesPerMonth()
@@ -139,8 +148,11 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
 
   @getIssuesPerMonth = ->
     return unless $scope.currentProject?
-    startDate = moment().startOf('year')
-    endDate = moment()
+    $scope.perMonthLoading = true
+    startDateValue = $('#start-date').val()
+    endDateValue = $('#end-date').val()
+    startDate = if startDateValue then moment('01/' + startDateValue) else moment().startOf('year')
+    endDate = if endDateValue then moment('01/' + endDateValue).endOf('month') else moment()
     range = moment().range(startDate, endDate)
     dateRanges = []
     range.by 'months', (start) ->
@@ -148,7 +160,7 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
       dateRanges.push
         start: start.format('YYYY-MM-DD')
         end: end.format('YYYY-MM-DD')
-        monthName: start.format('MMM') + '\'' + start.format('YY')
+        monthName: start.format('MMM') + '/' + start.format('YY')
 
     $q.all dateRanges.map ({start, end}) ->
       q = "><#{ start }|#{ end }"
@@ -186,5 +198,6 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
             enabled: true
         series: series
       chart = $chart.highcharts()
+      $scope.perMonthLoading = false
 
 ]
