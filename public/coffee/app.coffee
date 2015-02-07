@@ -1,4 +1,4 @@
-app = angular.module('charts', ['charts-projects'])
+app = angular.module('charts', ['charts-projects', 'angular-ladda'])
 
 app.factory 'Api', ['$http', '$window', ($http, $window) ->
   basePath: 'http://localhost:3000/api'
@@ -21,13 +21,14 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
     @_request('get', path, params)
 ]
 
-app.controller 'ChartsController', ['Api', '$scope', '$q', (Api, $scope, $q) ->
+app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $scope, $q, $filter) ->
   $scope.site = 'http://redmine.pfrus.com'
   $scope.key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
   $scope.projects = []
   $scope.statuses = []
 
   @getProjects = ->
+    $scope.signinLoading = true;
     Api.key = $scope.key
     Api.get('projects', limit: 100)
       .then (projects) ->
@@ -37,6 +38,7 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', (Api, $scope, $q) ->
   @setSelectedProject = (project) =>
     $scope.currentProject = project
     @getIssueStatuses()
+    @getTodayIssues()
 
   @isSelectedProject = (project) ->
     $scope.currentProject?.id == project.id
@@ -83,4 +85,52 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', (Api, $scope, $q) ->
           "#{ status.name } (#{ issuesByStatus.count })"
           issuesByStatus.count
         ]
+
+  @getTodayIssues = ->
+    today = $filter('date')(new Date(), 'yyyy-MM-dd')
+    Api.key = $scope.key
+    Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: '*', created_on: today)
+      .then (todayIssuesCreated) ->
+        $scope.currentProject?.todayIssuesCreatedCount = todayIssuesCreated.count
+        Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: 'closed', updated_on: today)
+      .then (todayIssuesClosed) ->
+        $scope.currentProject?.todayIssuesClosedCount = todayIssuesClosed.count
+      .then (todayIssuesClosedCount) ->
+        $scope.currentProject?.todayIssuesLoaded = true
+        $scope.currentProject?.todayIssuesCount = $scope.currentProject.todayIssuesCreatedCount + $scope.currentProject.todayIssuesClosedCount
+        $chart = $('#issues-today')
+        $chart.highcharts
+          chart:
+            type: 'column'
+          title:
+            text: null
+          xAxis:
+            categories: [
+              "Today Issues (#{ $scope.currentProject.todayIssuesCount })"
+            ]
+          yAxis: [
+            min: 0
+            title:
+              text: 'Issues'
+          ]
+          legend:
+            shadow: false
+          tooltip:
+            shared: true
+          plotOptions:
+            column:
+              shadow: false
+              borderWidth: 0
+              dataLabels:
+                enabled: true
+          series: [
+            name: 'Created'
+            color: 'rgba(165,170,217,1)'
+            data: [$scope.currentProject.todayIssuesCreatedCount]
+          ,
+            name: 'Closed'
+            color: 'rgba(153,214,13,.9)'
+            data: [$scope.currentProject.todayIssuesClosedCount]
+          ]
+        chart = $chart.highcharts()
 ]
