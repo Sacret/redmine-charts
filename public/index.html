@@ -5,12 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Redmine Charts</title>
+    <link href="images/logo2.ico" rel="shortcut icon" type="image/x-icon" />
     <link href="css/style.css" rel="stylesheet">
     <link href="bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
   </head>
-  <body>
+  <body ng-controller="ChartsController as chartsCtrl">
     <div ng-include="'templates/header.html'"></div>
-    <div class="container-fluid" ng-controller="ChartsController as chartsCtrl">
+    <div class="container-fluid">
       <div class="container" ng-include="'templates/login-form.html'" ng-hide="projects.length"></div>
       <div class="row">
         <project-names ng-show="projects.length" class="col-md-3 col-xs-12"></project-names>
