@@ -11,3 +11,21 @@
     </dl>
   </div>
 </div>
+<div class="panel panel-default" ng-show="currentProject.issuesbyStatuses.length">
+  <div class="panel-heading">Overall Issues</div>
+  <div class="panel-body">
+    <div id="issues-overall"></div>
+  </div>
+</div>
+<div class="panel panel-default" ng-show="currentProject.issuesPerMonth.length">
+  <div class="panel-heading">Issues Per Month</div>
+  <div class="panel-body">
+    <div id="issues-per-month"></div>
+  </div>
+</div>
+<div class="panel panel-default" ng-show="currentProject.issuesToday.length">
+  <div class="panel-heading">Today Issues</div>
+  <div class="panel-body">
+    <div id="issues-today"></div>
+  </div>
+</div>

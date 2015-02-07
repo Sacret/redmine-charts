@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "node server.js",
-    "develop": "nodemon --debug server.js",
+    "nodemon": "nodemon --debug -w . -w routes -e js,coffee server.js",
     "debug": "node debug localhost:5858"
   },
   "repository": {

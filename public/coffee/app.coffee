@@ -13,7 +13,9 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
       params: params
       method: method
     .then (data) ->
-      data.data[path]
+      result =
+        data: data.data[path]
+        count: data.data.total_count
 
   get: (path, params) ->
     @_request('get', path, params)
@@ -27,13 +29,13 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', (Api, $scope, $q) ->
 
   @getProjects = ->
     Api.key = $scope.key
-    Api.get('projects')
+    Api.get('projects', limit: 100)
       .then (projects) ->
-        $scope.projects = projects
+        $scope.projects = projects.data
+        $scope.projectsCount = projects.count
 
   @setSelectedProject = (project) =>
     $scope.currentProject = project
-    console.log project
     @getIssueStatuses()
 
   @isSelectedProject = (project) ->
@@ -43,11 +45,42 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', (Api, $scope, $q) ->
     Api.key = $scope.key
     Api.get('issue_statuses')
       .then (issueStatuses) =>
-        $scope.statuses = issueStatuses
+        $scope.statuses = issueStatuses.data
         $q.all $scope.statuses.map (status) =>
           @getIssuesByStatus($scope.currentProject, status)
+      .then (issuesbyStatuses) =>
+        $scope.currentProject?.issuesbyStatuses = issuesbyStatuses
+        $chart = $('#issues-overall')
+        $chart.highcharts
+          chart:
+            plotBackgroundColor: null
+            plotBorderWidth: null
+            plotShadow: false
+          title:
+            text: null
+          tooltip:
+            pointFormat: "Status share: <b>{point.percentage:.1f}%</b>"
+          plotOptions:
+            pie:
+              allowPointSelect: true
+              cursor: 'pointer'
+              dataLabels:
+                enabled: true
+                format: "<b>{point.name}</b>: {point.percentage:.1f} %"
+              showInLegend: true
+          series: [
+            type: 'pie'
+            name: 'Issues share'
+            data: issuesbyStatuses
+          ]
+        chart = $chart.highcharts()
 
   @getIssuesByStatus = (project, status) ->
     Api.key = $scope.key
     Api.get('issues', project_id: project.id, status_id: status.id, limit: 1)
+      .then (issuesByStatus) ->
+        result = [
+          "#{ status.name } (#{ issuesByStatus.count })"
+          issuesByStatus.count
+        ]
 ]

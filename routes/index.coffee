@@ -19,6 +19,5 @@ router.all '/api/:endpoint.:format', (req, res, next) ->
       err.status = response.statusCode
       return next(err)
     res.status(response.statusCode).send(body)
-    next()
 
 module.exports = router
