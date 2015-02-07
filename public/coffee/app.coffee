@@ -148,7 +148,7 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
       dateRanges.push
         start: start.format('YYYY-MM-DD')
         end: end.format('YYYY-MM-DD')
-        monthName: start.format('MMM')
+        monthName: start.format('MMM') + '\'' + start.format('YY')
 
     $q.all dateRanges.map ({start, end}) ->
       q = "><#{ start }|#{ end }"
