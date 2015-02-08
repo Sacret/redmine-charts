@@ -6,7 +6,7 @@
       <div class="panel-body">
         <form name="loginForm" class="form" role="form" novalidate ng-submit="loginForm.$valid && chartsCtrl.getProjects()">
           <div class="form-group">
-            <input type="url" class="form-control" id="site-url" placeholder="Site Url" ng-model="user.siteUrl" required>
+            <input type="url" class="form-control" id="site-url" placeholder="Site Url (e.g. http://www.redmine.org/)" ng-model="user.siteUrl" required>
           </div>
           <div class="form-group">
             <input type="password" class="form-control" id="api-key" placeholder="API Key" ng-model="user.apiKey" required>
@@ -14,7 +14,7 @@
           <div class="form-group">
             <div class="checkbox">
               <label>
-                <input type="checkbox"> Remember me
+                <input type="checkbox" checked> Remember me
               </label>
               <button type="submit" class="btn btn-primary pull-right" ladda="signinLoading" data-style="expand-left" ng-class="{ disabled:!loginForm.$valid }"><span class="ladda-label">Sign in</span></button>
             </div>

@@ -36,14 +36,13 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
 
   @setSelectedProject = (project) =>
     $scope.currentProject = project
-    $scope.currentProject.startDate = moment().startOf('year').format('MMM/YY')
-    $scope.currentProject.endDate = moment().format('MMM/YY')
-    $('#datepicker').datepicker('remove')
+    $('#start-date').val(moment().startOf('year').format('MMM/YY'))
+    $('#end-date').val(moment().format('MMM/YY'))
     $('#datepicker').datepicker(
       format: 'M/yy'
       minViewMode: 1
       startDate: moment(project.created_on).format('MMM/YY')
-      endDate: $scope.currentProject.endDate
+      endDate: moment().format('MMM/YY')
     )
     @getIssueStatuses()
     @getTodayIssues()
