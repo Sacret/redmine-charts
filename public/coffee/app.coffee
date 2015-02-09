@@ -25,8 +25,8 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
 ]
 
 app.controller 'ChartsController', [
-  '$q', '$filter', 'jQuery', 'lodash', 'moment', 'Api',
-, ($q, $filter, $, _, moment, Api) ->
+  '$q', 'jQuery', 'lodash', 'moment', 'Api',
+, ($q, $, _, moment, Api) ->
   @site = 'http://redmine.pfrus.com'
   @key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
   @projects = []
@@ -111,7 +111,7 @@ app.controller 'ChartsController', [
       ]
 
   @getTodayIssues = (project) =>
-    today = $filter('date')(new Date(), 'yyyy-MM-dd')
+    today = moment().format('YYYY-MM-DD')
     Api.key = @key
     $q.all([
       Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: today)
