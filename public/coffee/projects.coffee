@@ -1,12 +1,12 @@
-app = angular.module('charts-projects', [])
+projects = angular.module('charts-projects', [])
 
-app.directive 'projectNames', ->
+projects.directive 'projectNames', ->
   restrict: 'E'
   templateUrl: 'templates/project-names.html'
   ###controller: ->###
   ###controllerAs: 'projects'###
 
-app.directive 'projectInfo', ->
+projects.directive 'projectInfo', ->
   restrict: 'E'
   templateUrl: 'templates/project-info.html'
   ###controller: ->###
