@@ -27,23 +27,25 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
   $scope.statuses = []
 
   @getProjects = ->
-    $scope.signinLoading = true;
+    $scope.signinLoading = true
     Api.key = $scope.key
     Api.get('projects', limit: 100)
       .then (projects) ->
         $scope.projects = projects.data
         $scope.projectsCount = projects.count
+        $scope.signinLoading = false
 
   @setSelectedProject = (project) =>
     $scope.currentProject = project
     $('#start-date').val(moment().startOf('year').format('MMM/YY'))
     $('#end-date').val(moment().format('MMM/YY'))
-    $('#datepicker').datepicker(
+    $('#datepicker').datepicker
       format: 'M/yy'
       minViewMode: 1
-      startDate: moment(project.created_on).format('MMM/YY')
-      endDate: moment().format('MMM/YY')
-    )
+    $('#start-date').data('datepicker').setStartDate(moment(project.created_on).toDate())
+    $('#start-date').data('datepicker').setEndDate(moment().toDate())
+    $('#end-date').data('datepicker').setStartDate(moment(project.created_on).toDate())
+    $('#end-date').data('datepicker').setEndDate(moment().toDate())
     @getIssueStatuses()
     @getTodayIssues()
     @getIssuesPerMonth()
