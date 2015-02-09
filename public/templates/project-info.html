@@ -31,7 +31,7 @@
         <span class="input-group-addon">to</span>
         <input id="end-date" ype="text" class="form-control" name="end" />
       </div>
-      <button class="btn btn-primary col-md-2 col-xs-2" type="button" ng-click="chartsCtrl.getIssuesPerMonth()" ladda="perMonthLoading" data-style="expand-right"><span class="ladda-label">Apply</span></button>
+      <button class="btn btn-primary col-md-2 col-xs-2" type="button" ng-click="chartsCtrl.getIssuesPerMonth(chartsCtrl.currentProject)" ladda="perMonthLoading" data-style="expand-right"><span class="ladda-label">Apply</span></button>
     </div>
     <div id="issues-per-month" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded"></div>
   </div>
