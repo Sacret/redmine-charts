@@ -32,8 +32,8 @@ app.controller 'ChartsController', [
   @projects = []
   @statuses = []
   @projectsCount = undefined
-  @signinLoading = undefined
   @currentProject = undefined
+  @signinLoading = false
   @perMonthLoading = false
 
   @getProjects = =>
@@ -61,6 +61,7 @@ app.controller 'ChartsController', [
     @getIssueStatuses(project)
     @getTodayIssues(project)
     @getIssuesPerMonth(project)
+    @getIssuesByUser(project)
 
   @isSelectedProject = (project) ->
     @currentProject?.id == project.id
@@ -117,8 +118,6 @@ app.controller 'ChartsController', [
       Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: today)
       Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: today)
     ]).then ([todayIssuesCreated, todayIssuesClosed]) ->
-      project.todayIssuesCreatedCount = todayIssuesCreated.count
-      project.todayIssuesClosedCount = todayIssuesClosed.count
       project.todayIssuesLoaded = true
       project.todayIssuesCount = todayIssuesCreated.count + todayIssuesClosed.count
       $chart = $('#issues-today')
@@ -134,7 +133,7 @@ app.controller 'ChartsController', [
         yAxis: [
           min: 0
           title:
-            text: 'Issues'
+            text: 'Issues count'
         ]
         legend:
           shadow: false
@@ -179,7 +178,7 @@ app.controller 'ChartsController', [
         Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: q)
       ]
     .then (issuesPerMonth) =>
-      project.perMonthIssuesLoaded = true
+      return unless issuesPerMonth.length
       series = [
         name: 'Created Issues'
         data: _(issuesPerMonth).pluck('0').pluck('count').value()
@@ -209,4 +208,69 @@ app.controller 'ChartsController', [
         series: series
       chart = $chart.highcharts()
       @perMonthLoading = false
+      project.perMonthIssuesLoaded = true
+
+  @getIssuesByUser = (project) =>
+    startDate = moment(project.created_on)
+    endDate = moment()
+    range = moment().range(startDate, endDate)
+    dateRanges = []
+    range.by 'weeks', (start) ->
+      end = moment.min(start.clone().endOf('week'), endDate)
+      dateRanges.push
+        start: start.format('YYYY-MM-DD')
+        end: end.format('YYYY-MM-DD')
+        weekName: start.format('YYYY-MM-DD')  + '—' + end.format('YYYY-MM-DD')
+    $q.all dateRanges.map ({start, end}) ->
+      q = "><#{ start }|#{ end }"
+      $q.all [
+        Api.get('issues', project_id: project.id, limit: 1, status_id: 'open', assigned_to_id: 'me', created_on: q)
+        Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', assigned_to_id: 'me', updated_on: q)
+      ]
+    .then (issuesByUserPerWeek) =>
+      return unless issuesByUserPerWeek.length
+      series = [
+        name: 'Open Issues'
+        data: _(issuesByUserPerWeek).pluck('0').pluck('count').value()
+      ,
+        name: 'Closed Issues'
+        data: _(issuesByUserPerWeek).pluck('1').pluck('count').value()
+      ]
+
+      $chart = $('#my-issues')
+      $chart.highcharts
+        chart:
+          type: 'area'
+          zoomType: 'x'
+          panning: true,
+          panKey: 'shift'
+        title:
+          text: null
+        xAxis:
+          categories: _.pluck(dateRanges, 'weekName')
+          tickmarkPlacement: 'on'
+          title:
+            enabled: false
+          labels:
+            enabled: false
+        yAxis:
+          title:
+            text: 'Issues count'
+        tooltip:
+          shared: true,
+        legend:
+          enabled: true
+        plotOptions:
+          area:
+            stacking: 'normal'
+            lineColor: '#ffffff'
+            lineWidth: 1
+            marker:
+              enabled: true
+          dataLabels:
+            enabled: true
+          showInLegend: true
+        series: series
+      chart = $chart.highcharts()
+      project.byUserIssuesLoaded = true
 ]
