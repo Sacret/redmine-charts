@@ -1,5 +1,11 @@
+# Downloaded components and modules
 bower_components
 node_modules
 
+# Generated files
 public/css/*
 public/js/*
+
+# Sublime Text files
+*.sublime-workspace
+*.sublime-project
