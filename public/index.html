@@ -13,10 +13,10 @@
   <body ng-controller="ChartsController as chartsCtrl">
     <div ng-include="'templates/header.html'"></div>
     <div class="container-fluid">
-      <div class="container" ng-include="'templates/login-form.html'" ng-hide="projects.length"></div>
+      <div class="container" ng-include="'templates/login-form.html'" ng-hide="chartsCtrl.projects.length"></div>
       <div class="row">
-        <project-names ng-show="projects.length" class="col-md-3 col-xs-12"></project-names>
-        <project-info ng-show="currentProject" class="col-md-9 col-xs-12"></project-info>
+        <project-names ng-show="chartsCtrl.projects.length" class="col-md-3 col-xs-12"></project-names>
+        <project-info ng-show="chartsCtrl.currentProject" class="col-md-9 col-xs-12"></project-info>
       </div>
     </div>
     <div ng-include="'templates/footer.html'"></div>

@@ -1,31 +1,31 @@
-<div class="panel panel-default" ng-show="currentProject">
+<div class="panel panel-default" ng-show="chartsCtrl.currentProject">
   <div class="panel-heading">General Info</div>
   <div class="panel-body">
-    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject" />
-    <dl ng-show="currentProject">
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject" />
+    <dl ng-show="chartsCtrl.currentProject">
       <dt>Name</dt>
-      <dd>{{ currentProject.name }}</dd>
-      <dt ng-show="currentProject.description">Description</dt>
-      <dd ng-show="currentProject.description">{{ currentProject.description }}</dd>
+      <dd>{{ chartsCtrl.currentProject.name }}</dd>
+      <dt ng-show="chartsCtrl.currentProject.description">Description</dt>
+      <dd ng-show="chartsCtrl.currentProject.description">{{ chartsCtrl.currentProject.description }}</dd>
       <dt>Created</dt>
-      <dd>{{ currentProject.created_on | date:'MMM dd, yyyy' }}</dd>
+      <dd>{{ chartsCtrl.currentProject.created_on | date:'MMM dd, yyyy' }}</dd>
     </dl>
   </div>
 </div>
 
 <div class="panel panel-default">
-  <div class="panel-heading">Overall Issues <span ng-show="currentProject.issuesOverallCount">({{ currentProject.issuesOverallCount }})</span></div>
+  <div class="panel-heading">Overall Issues <span ng-show="chartsCtrl.currentProject.issuesOverallCount">({{ chartsCtrl.currentProject.issuesOverallCount }})</span></div>
   <div class="panel-body">
-    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.issuesbyStatuses.length" />
-    <div id="issues-overall" ng-show="currentProject.issuesbyStatuses.length"></div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.issuesbyStatuses.length" />
+    <div id="issues-overall" ng-show="chartsCtrl.currentProject.issuesbyStatuses.length"></div>
   </div>
 </div>
 
 <div class="panel panel-default">
   <div class="panel-heading">Issues Per Month</div>
   <div class="panel-body">
-    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.perMonthIssuesLoaded" />
-    <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="currentProject.perMonthIssuesLoaded">
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.perMonthIssuesLoaded" />
+    <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded">
       <div class="input-daterange input-group col-md-10 col-xs-10 pull-left" id="datepicker">
         <input id="start-date" type="text" class="form-control" name="start" />
         <span class="input-group-addon">to</span>
@@ -33,22 +33,22 @@
       </div>
       <button class="btn btn-primary col-md-2 col-xs-2" type="button" ng-click="chartsCtrl.getIssuesPerMonth()" ladda="perMonthLoading" data-style="expand-right"><span class="ladda-label">Apply</span></button>
     </div>
-    <div id="issues-per-month" ng-show="currentProject.perMonthIssuesLoaded"></div>
+    <div id="issues-per-month" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded"></div>
   </div>
 </div>
 
 <div class="panel panel-default">
   <div class="panel-heading">Today Issues</div>
   <div class="panel-body">
-    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.todayIssuesLoaded" />
-    <div id="issues-today" ng-show="currentProject.todayIssuesLoaded"></div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.todayIssuesLoaded" />
+    <div id="issues-today" ng-show="chartsCtrl.currentProject.todayIssuesLoaded"></div>
   </div>
 </div>
 
 <div class="panel panel-default">
   <div class="panel-heading">My Progress</div>
   <div class="panel-body">
-    <img src="images/ajax-loader.gif" class="center-block" ng-hide="currentProject.myProgress" />
-    <div id="issues-today" ng-show="currentProject.myProgress"></div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.myProgress" />
+    <div id="issues-today" ng-show="chartsCtrl.currentProject.myProgress"></div>
   </div>
 </div>

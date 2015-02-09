@@ -25,24 +25,24 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
 ]
 
 app.controller 'ChartsController', [
-  '$scope', '$q', '$filter', 'jQuery', 'lodash', 'moment', 'Api',
-, ($scope, $q, $filter, $, _, moment, Api) ->
-  $scope.site = 'http://redmine.pfrus.com'
-  $scope.key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
-  $scope.projects = []
-  $scope.statuses = []
+  '$q', '$filter', 'jQuery', 'lodash', 'moment', 'Api',
+, ($q, $filter, $, _, moment, Api) ->
+  @site = 'http://redmine.pfrus.com'
+  @key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
+  @projects = []
+  @statuses = []
 
-  @getProjects = ->
-    $scope.signinLoading = true
-    Api.key = $scope.key
+  @getProjects = =>
+    @signinLoading = true
+    Api.key = @key
     Api.get('projects', limit: 100)
-      .then (projects) ->
-        $scope.projects = projects.data
-        $scope.projectsCount = projects.count
-        $scope.signinLoading = false
+      .then (projects) =>
+        @projects = projects.data
+        @projectsCount = projects.count
+        @signinLoading = false
 
   @setSelectedProject = (project) =>
-    $scope.currentProject = project
+    @currentProject = project
     $('#datepicker').datepicker
       format: 'M/yy'
       minViewMode: 1
@@ -59,14 +59,14 @@ app.controller 'ChartsController', [
     @getIssuesPerMonth(project)
 
   @isSelectedProject = (project) ->
-    $scope.currentProject?.id == project.id
+    @currentProject?.id == project.id
 
   @getIssueStatuses = (project) =>
-    Api.key = $scope.key
+    Api.key = @key
     Api.get('issue_statuses')
       .then (issueStatuses) =>
-        $scope.statuses = issueStatuses.data
-        $q.all $scope.statuses.map (status) =>
+        @statuses = issueStatuses.data
+        $q.all @statuses.map (status) =>
           @getIssuesByStatus(project, status)
       .then (issuesbyStatuses) ->
         project.issuesbyStatuses = issuesbyStatuses
@@ -98,17 +98,17 @@ app.controller 'ChartsController', [
           ]
         chart = $chart.highcharts()
 
-  @getIssuesByStatus = (project, status) ->
-    Api.key = $scope.key
+  @getIssuesByStatus = (project, status) =>
+    Api.key = @key
     Api.get('issues', project_id: project.id, status_id: status.id, limit: 1)
       .then (issuesByStatus) -> [
         "#{ status.name } (#{ issuesByStatus.count })"
         issuesByStatus.count
       ]
 
-  @getTodayIssues = (project) ->
+  @getTodayIssues = (project) =>
     today = $filter('date')(new Date(), 'yyyy-MM-dd')
-    Api.key = $scope.key
+    Api.key = @key
     $q.all([
       Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: today)
       Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: today)
@@ -153,8 +153,8 @@ app.controller 'ChartsController', [
         ]
       chart = $chart.highcharts()
 
-  @getIssuesPerMonth = (project) ->
-    $scope.perMonthLoading = true
+  @getIssuesPerMonth = (project) =>
+    @perMonthLoading = true
     startDateValue = $('#start-date').val()
     endDateValue = $('#end-date').val()
     startDate = if startDateValue then moment('01/' + startDateValue) else moment().startOf('year')
@@ -174,7 +174,7 @@ app.controller 'ChartsController', [
         Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: q)
         Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: q)
       ]
-    .then (issuesPerMonth) ->
+    .then (issuesPerMonth) =>
       project.perMonthIssuesLoaded = true
       series = [
         name: 'Created Issues'
@@ -204,5 +204,5 @@ app.controller 'ChartsController', [
             enabled: true
         series: series
       chart = $chart.highcharts()
-      $scope.perMonthLoading = false
+      @perMonthLoading = false
 ]
