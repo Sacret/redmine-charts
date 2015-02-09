@@ -1,5 +1,9 @@
 app = angular.module('charts', ['charts-projects', 'angular-ladda'])
 
+app.constant('jQuery', window.jQuery)
+app.constant('lodash', window._)
+app.constant('moment', window.moment)
+
 app.factory 'Api', ['$http', '$window', ($http, $window) ->
   basePath: 'http://localhost:3000/api'
   key: ''
@@ -21,8 +25,8 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
 ]
 
 app.controller 'ChartsController', [
-  'Api', '$scope', '$q', '$filter'
-, (Api, $scope, $q, $filter) ->
+  '$scope', '$q', '$filter', 'jQuery', 'lodash', 'moment', 'Api',
+, ($scope, $q, $filter, $, _, moment, Api) ->
   $scope.site = 'http://redmine.pfrus.com'
   $scope.key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
   $scope.projects = []
