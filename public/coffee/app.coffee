@@ -20,7 +20,9 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
     @_request('get', path, params)
 ]
 
-app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $scope, $q, $filter) ->
+app.controller 'ChartsController', [
+  'Api', '$scope', '$q', '$filter'
+, (Api, $scope, $q, $filter) ->
   $scope.site = 'http://redmine.pfrus.com'
   $scope.key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
   $scope.projects = []
@@ -37,33 +39,34 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
 
   @setSelectedProject = (project) =>
     $scope.currentProject = project
-    $('#start-date').val(moment().startOf('year').format('MMM/YY'))
-    $('#end-date').val(moment().format('MMM/YY'))
     $('#datepicker').datepicker
       format: 'M/yy'
       minViewMode: 1
-    $('#start-date').data('datepicker').setStartDate(moment(project.created_on).toDate())
-    $('#start-date').data('datepicker').setEndDate(moment().toDate())
-    $('#end-date').data('datepicker').setStartDate(moment(project.created_on).toDate())
-    $('#end-date').data('datepicker').setEndDate(moment().toDate())
-    @getIssueStatuses()
-    @getTodayIssues()
-    @getIssuesPerMonth()
+    startDate = moment(project.created_on).toDate()
+    endDate = moment().toDate()
+    $('#start-date').val(moment().startOf('year').format('MMM/YY'))
+    $('#start-date').data('datepicker').setStartDate(startDate)
+    $('#start-date').data('datepicker').setEndDate(endDate)
+    $('#end-date').val(moment().format('MMM/YY'))
+    $('#end-date').data('datepicker').setStartDate(startDate)
+    $('#end-date').data('datepicker').setEndDate(endDate)
+    @getIssueStatuses(project)
+    @getTodayIssues(project)
+    @getIssuesPerMonth(project)
 
   @isSelectedProject = (project) ->
     $scope.currentProject?.id == project.id
 
-  @getIssueStatuses = =>
-    return unless $scope.currentProject?
+  @getIssueStatuses = (project) =>
     Api.key = $scope.key
     Api.get('issue_statuses')
       .then (issueStatuses) =>
         $scope.statuses = issueStatuses.data
         $q.all $scope.statuses.map (status) =>
-          @getIssuesByStatus($scope.currentProject, status)
-      .then (issuesbyStatuses) =>
-        $scope.currentProject.issuesbyStatuses = issuesbyStatuses
-        $scope.currentProject.issuesOverallCount = _(issuesbyStatuses)
+          @getIssuesByStatus(project, status)
+      .then (issuesbyStatuses) ->
+        project.issuesbyStatuses = issuesbyStatuses
+        project.issuesOverallCount = _(issuesbyStatuses)
           .pluck('1')
           .reduce (a, b) -> a + b
         $chart = $('#issues-overall')
@@ -99,18 +102,17 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
         issuesByStatus.count
       ]
 
-  @getTodayIssues = ->
-    return unless $scope.currentProject?
+  @getTodayIssues = (project) ->
     today = $filter('date')(new Date(), 'yyyy-MM-dd')
     Api.key = $scope.key
     $q.all([
-      Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: '*', created_on: today)
-      Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: 'closed', updated_on: today)
+      Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: today)
+      Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: today)
     ]).then ([todayIssuesCreated, todayIssuesClosed]) ->
-      $scope.currentProject.todayIssuesCreatedCount = todayIssuesCreated.count
-      $scope.currentProject.todayIssuesClosedCount = todayIssuesClosed.count
-      $scope.currentProject.todayIssuesLoaded = true
-      $scope.currentProject.todayIssuesCount = todayIssuesCreated.count + todayIssuesClosed.count
+      project.todayIssuesCreatedCount = todayIssuesCreated.count
+      project.todayIssuesClosedCount = todayIssuesClosed.count
+      project.todayIssuesLoaded = true
+      project.todayIssuesCount = todayIssuesCreated.count + todayIssuesClosed.count
       $chart = $('#issues-today')
       $chart.highcharts
         chart:
@@ -119,7 +121,7 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
           text: null
         xAxis:
           categories: [
-            "Today Issues (#{ $scope.currentProject.todayIssuesCount })"
+            "Today Issues (#{ project.todayIssuesCount })"
           ]
         yAxis: [
           min: 0
@@ -147,8 +149,7 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
         ]
       chart = $chart.highcharts()
 
-  @getIssuesPerMonth = ->
-    return unless $scope.currentProject?
+  @getIssuesPerMonth = (project) ->
     $scope.perMonthLoading = true
     startDateValue = $('#start-date').val()
     endDateValue = $('#end-date').val()
@@ -166,11 +167,11 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
     $q.all dateRanges.map ({start, end}) ->
       q = "><#{ start }|#{ end }"
       $q.all [
-        Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: '*', created_on: q)
-        Api.get('issues', project_id: $scope.currentProject.id, limit: 1, status_id: 'closed', updated_on: q)
+        Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: q)
+        Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: q)
       ]
     .then (issuesPerMonth) ->
-      $scope.currentProject.perMonthIssuesLoaded = true
+      project.perMonthIssuesLoaded = true
       series = [
         name: 'Created Issues'
         data: _(issuesPerMonth).pluck('0').pluck('count').value()
@@ -200,5 +201,4 @@ app.controller 'ChartsController', ['Api', '$scope', '$q', '$filter', (Api, $sco
         series: series
       chart = $chart.highcharts()
       $scope.perMonthLoading = false
-
 ]
