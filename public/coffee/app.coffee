@@ -31,6 +31,10 @@ app.controller 'ChartsController', [
   @key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
   @projects = []
   @statuses = []
+  @projectsCount = undefined
+  @signinLoading = undefined
+  @currentProject = undefined
+  @perMonthLoading = false
 
   @getProjects = =>
     @signinLoading = true
