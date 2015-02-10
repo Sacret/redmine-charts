@@ -3,10 +3,10 @@ request = require 'request'
 
 router = express.Router()
 
-router.all '/api/:endpoint.:format', (req, res, next) ->
-  {endpoint, format} = req.params
+router.all '/api/*'
+, (req, res, next) ->
   request
-    uri: "http://redmine.pfrus.com/#{ endpoint }.#{ format }"
+    uri: 'http://redmine.pfrus.com/' + req.params[0]
     method: req.method
     qs: req.query
   , (error, response, body) ->
