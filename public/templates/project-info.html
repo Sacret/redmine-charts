@@ -25,13 +25,15 @@
   <div class="panel-heading">Issues Per Month</div>
   <div class="panel-body">
     <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.perMonthIssuesLoaded" />
-    <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded">
-      <div class="input-daterange input-group col-md-10 col-xs-10 pull-left" id="datepicker">
-        <input id="start-date" type="text" class="form-control" name="start" />
-        <span class="input-group-addon">to</span>
-        <input id="end-date" ype="text" class="form-control" name="end" />
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded">
+        <div class="input-daterange input-group col-md-10 col-xs-10 pull-left" id="datepicker">
+          <input id="start-date" type="text" class="form-control" name="start" />
+          <span class="input-group-addon">to</span>
+          <input id="end-date" ype="text" class="form-control" name="end" />
+        </div>
+        <button class="btn btn-primary col-md-2 col-xs-2" type="button" ng-click="chartsCtrl.getIssuesPerMonth(chartsCtrl.currentProject)" ladda="chartsCtrl.perMonthLoading" data-style="expand-right"><span class="ladda-label">Apply</span></button>
       </div>
-      <button class="btn btn-primary col-md-2 col-xs-2" type="button" ng-click="chartsCtrl.getIssuesPerMonth(chartsCtrl.currentProject)" ladda="chartsCtrl.perMonthLoading" data-style="expand-right"><span class="ladda-label">Apply</span></button>
     </div>
     <div id="issues-per-month" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded"></div>
   </div>

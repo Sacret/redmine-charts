@@ -36,6 +36,16 @@ app.controller 'ChartsController', [
   @signinLoading = false
   @perMonthLoading = false
 
+  @getUser = =>
+    @getProjects()
+    # @site = $('#site-url').val().trim()
+    # @key = $('#api-key').val().trim()
+    # Api.key = @key
+    # Api.get('users/current')
+      # .then (user) =>
+        # return unless user?
+        # @getProjects()
+
   @getProjects = =>
     @signinLoading = true
     Api.key = @key
@@ -52,10 +62,10 @@ app.controller 'ChartsController', [
       minViewMode: 1
     startDate = moment(project.created_on).toDate()
     endDate = moment().toDate()
-    $('#start-date').val(moment().startOf('year').format('MMM/YY'))
+    $('#start-date').data('datepicker').setDate(moment().startOf('year').toDate())
     $('#start-date').data('datepicker').setStartDate(startDate)
     $('#start-date').data('datepicker').setEndDate(endDate)
-    $('#end-date').val(moment().format('MMM/YY'))
+    $('#end-date').data('datepicker').setDate(moment().toDate())
     $('#end-date').data('datepicker').setStartDate(startDate)
     $('#end-date').data('datepicker').setEndDate(endDate)
     @getIssueStatuses(project)
@@ -158,10 +168,10 @@ app.controller 'ChartsController', [
 
   @getIssuesPerMonth = (project) =>
     @perMonthLoading = true
-    startDateValue = $('#start-date').val()
-    endDateValue = $('#end-date').val()
-    startDate = if startDateValue then moment('01/' + startDateValue) else moment().startOf('year')
-    endDate = if endDateValue then moment('01/' + endDateValue).endOf('month') else moment()
+    startDateValue = $('#start-date').data('datepicker').getDate()
+    endDateValue = $('#end-date').data('datepicker').getDate()
+    startDate = if startDateValue then moment(startDateValue) else moment().startOf('year')
+    endDate = if endDateValue then moment(endDateValue).endOf('month') else moment()
     range = moment().range(startDate, endDate)
     dateRanges = []
     range.by 'months', (start) ->
@@ -266,7 +276,7 @@ app.controller 'ChartsController', [
             lineColor: '#ffffff'
             lineWidth: 1
             marker:
-              enabled: true
+              enabled: false
           dataLabels:
             enabled: true
           showInLegend: true
