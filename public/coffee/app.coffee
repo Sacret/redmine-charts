@@ -56,18 +56,21 @@ app.controller 'ChartsController', [
         @signinLoading = false
 
   @setSelectedProject = (project) =>
+    self = @
     @currentProject = project
-    $('#datepicker').datepicker
-      format: 'M/yy'
-      minViewMode: 1
-    startDate = moment(project.created_on).toDate()
-    endDate = moment().toDate()
-    $('#start-date').data('datepicker').setDate(moment().startOf('year').toDate())
-    $('#start-date').data('datepicker').setStartDate(startDate)
-    $('#start-date').data('datepicker').setEndDate(endDate)
-    $('#end-date').data('datepicker').setDate(moment().toDate())
-    $('#end-date').data('datepicker').setStartDate(startDate)
-    $('#end-date').data('datepicker').setEndDate(endDate)
+    $('#datepicker').daterangepicker
+      format: 'MMM/YY'
+      startDate: moment().startOf('year').toDate()
+      endDate: moment().toDate()
+      minDate: moment(project.created_on).toDate()
+      maxDate: moment().toDate()
+      , (start, end) ->
+        self.getIssuesPerMonth(project)
+      #ranges:
+        #'Last Month': [moment().subtract('month', 1).startOf('month'), moment().endOf('month')]
+        #'Last 6 Months': [moment().subtract('month', 6).startOf('month'), moment().endOf('month')]
+        #'Last Year': [moment().subtract('month', 12).startOf('month'), moment().endOf('month')]
+    $('#datepicker').val(moment().startOf('year').format('MMM/YY') + ' - ' + moment().format('MMM/YY'))
     @getIssueStatuses(project)
     @getTodayIssues(project)
     @getIssuesPerMonth(project)
@@ -167,9 +170,9 @@ app.controller 'ChartsController', [
       chart = $chart.highcharts()
 
   @getIssuesPerMonth = (project) =>
-    @perMonthLoading = true
-    startDateValue = $('#start-date').data('datepicker').getDate()
-    endDateValue = $('#end-date').data('datepicker').getDate()
+    project.perMonthIssuesLoaded = false
+    startDateValue = $('#datepicker').data().daterangepicker.startDate
+    endDateValue = $('#datepicker').data().daterangepicker.endDate
     startDate = if startDateValue then moment(startDateValue) else moment().startOf('year')
     endDate = if endDateValue then moment(endDateValue).endOf('month') else moment()
     range = moment().range(startDate, endDate)
@@ -217,7 +220,6 @@ app.controller 'ChartsController', [
             enabled: true
         series: series
       chart = $chart.highcharts()
-      @perMonthLoading = false
       project.perMonthIssuesLoaded = true
 
   @getIssuesByUser = (project) =>
@@ -234,7 +236,7 @@ app.controller 'ChartsController', [
     $q.all dateRanges.map ({start, end}) ->
       q = "><#{ start }|#{ end }"
       $q.all [
-        Api.get('issues', project_id: project.id, limit: 1, status_id: 'open', assigned_to_id: 'me', created_on: q)
+        Api.get('issues', project_id: project.id, limit: 1, status_id: '*', assigned_to_id: 'me', created_on: q)
         Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', assigned_to_id: 'me', updated_on: q)
       ]
     .then (issuesByUserPerWeek) =>
@@ -272,7 +274,6 @@ app.controller 'ChartsController', [
           enabled: true
         plotOptions:
           area:
-            stacking: 'normal'
             lineColor: '#ffffff'
             lineWidth: 1
             marker:

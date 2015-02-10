@@ -32,7 +32,7 @@ gulp.task 'components', ->
     'angular-ladda/dist/angular-ladda.js'
     'moment/moment.js'
     'moment-range/lib/moment-range.js'
-    'bootstrap-datepicker/js/bootstrap-datepicker.js'
+    'bootstrap-daterangepicker/daterangepicker.js'
   ]
   gulp.src(components.map (p) -> paths.components + '/' + p)
     .pipe concat('components.js')
