@@ -34,7 +34,6 @@ app.controller 'ChartsController', [
   @projectsCount = undefined
   @currentProject = undefined
   @signinLoading = false
-  @perMonthLoading = false
 
   @getUser = =>
     @getProjects()
