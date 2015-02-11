@@ -56,7 +56,6 @@ app.controller 'ChartsController', [
         @signinLoading = false
 
   @setSelectedProject = (project) =>
-    self = @
     @currentProject = project
     $('#datepicker').daterangepicker
       format: 'MMM/YY'
@@ -64,8 +63,8 @@ app.controller 'ChartsController', [
       endDate: moment().toDate()
       minDate: moment(project.created_on).toDate()
       maxDate: moment().toDate()
-      , (start, end) ->
-        self.getIssuesPerMonth(project)
+    , (start, end) =>
+      @getIssuesPerMonth(project)
       #ranges:
         #'Last Month': [moment().subtract('month', 1).startOf('month'), moment().endOf('month')]
         #'Last 6 Months': [moment().subtract('month', 6).startOf('month'), moment().endOf('month')]
@@ -169,7 +168,7 @@ app.controller 'ChartsController', [
         ]
       chart = $chart.highcharts()
 
-  @getIssuesPerMonth = (project) =>
+  @getIssuesPerMonth = (project) ->
     project.perMonthIssuesLoaded = false
     startDateValue = $('#datepicker').data().daterangepicker.startDate
     endDateValue = $('#datepicker').data().daterangepicker.endDate
@@ -190,7 +189,7 @@ app.controller 'ChartsController', [
         Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: q)
         Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: q)
       ]
-    .then (issuesPerMonth) =>
+    .then (issuesPerMonth) ->
       return unless issuesPerMonth.length
       series = [
         name: 'Created Issues'
@@ -222,7 +221,7 @@ app.controller 'ChartsController', [
       chart = $chart.highcharts()
       project.perMonthIssuesLoaded = true
 
-  @getIssuesByUser = (project) =>
+  @getIssuesByUser = (project) ->
     startDate = moment(project.created_on)
     endDate = moment()
     range = moment().range(startDate, endDate)
@@ -239,7 +238,7 @@ app.controller 'ChartsController', [
         Api.get('issues', project_id: project.id, limit: 1, status_id: '*', assigned_to_id: 'me', created_on: q)
         Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', assigned_to_id: 'me', updated_on: q)
       ]
-    .then (issuesByUserPerWeek) =>
+    .then (issuesByUserPerWeek) ->
       return unless issuesByUserPerWeek.length
       series = [
         name: 'Open Issues'
