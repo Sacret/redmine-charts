@@ -169,10 +169,8 @@ app.controller 'ChartsController', [
 
   @getIssuesPerMonth = (project) ->
     project.perMonthIssuesLoaded = false
-    startDateValue = $('#datepicker').data().daterangepicker.startDate
-    endDateValue = $('#datepicker').data().daterangepicker.endDate
-    startDate = if startDateValue then moment(startDateValue) else moment().startOf('year')
-    endDate = if endDateValue then moment(endDateValue).endOf('month') else moment()
+    startDate = $('#datepicker').data().daterangepicker.startDate ? moment().startOf('year')
+    endDate = $('#datepicker').data().daterangepicker.endDate ? moment()
     range = moment().range(startDate, endDate)
     dateRanges = []
     range.by 'months', (start) ->
@@ -231,6 +229,7 @@ app.controller 'ChartsController', [
         start: start.format('YYYY-MM-DD')
         end: end.format('YYYY-MM-DD')
         weekName: start.format('YYYY-MM-DD')  + '—' + end.format('YYYY-MM-DD')
+
     $q.all dateRanges.map ({start, end}) ->
       q = "><#{ start }|#{ end }"
       $q.all [
