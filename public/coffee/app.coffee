@@ -17,7 +17,7 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
       params: params
       method: method
     .then (data) ->
-      data: data.data[path]
+      data: data.data[path] ? data.data
       count: data.data.total_count
 
   get: (path, params) ->
@@ -33,17 +33,18 @@ app.controller 'ChartsController', [
   @statuses = []
   @projectsCount = undefined
   @currentProject = undefined
+  @currentUser = undefined
   @signinLoading = false
 
   @getUser = =>
-    @getProjects()
-    # @site = $('#site-url').val().trim()
-    # @key = $('#api-key').val().trim()
-    # Api.key = @key
-    # Api.get('users/current')
-      # .then (user) =>
-        # return unless user?
-        # @getProjects()
+    @site = $('#site-url').val().trim()
+    @key = $('#api-key').val().trim()
+    Api.key = @key
+    Api.get('users/current')
+      .then (user) =>
+        return unless user?
+        @currentUser = user.data.user
+        @getProjects()
 
   @getProjects = =>
     @signinLoading = true
@@ -58,16 +59,17 @@ app.controller 'ChartsController', [
     @currentProject = project
     $('#datepicker').daterangepicker
       format: 'MMM/YY'
-      startDate: moment().startOf('year').toDate()
+      startDate: moment.max(moment().startOf('year'), moment(project.created_on)).toDate()
       endDate: moment().toDate()
       minDate: moment(project.created_on).toDate()
       maxDate: moment().toDate()
+      showDropdowns: true
+      ranges:
+        'Last 3 Months': [moment().subtract('month', 3).startOf('month'), moment().endOf('month')]
+        'Last 6 Months': [moment().subtract('month', 6).startOf('month'), moment().endOf('month')]
+        'Last Year': [moment().subtract('month', 12).startOf('month'), moment().endOf('month')]
     , (start, end) =>
       @getIssuesPerMonth(project)
-      #ranges:
-        #'Last Month': [moment().subtract('month', 1).startOf('month'), moment().endOf('month')]
-        #'Last 6 Months': [moment().subtract('month', 6).startOf('month'), moment().endOf('month')]
-        #'Last Year': [moment().subtract('month', 12).startOf('month'), moment().endOf('month')]
     $('#datepicker').val(moment().startOf('year').format('MMM/YY') + ' - ' + moment().format('MMM/YY'))
     @getIssueStatuses(project)
     @getTodayIssues(project)
