@@ -67,6 +67,11 @@ app.controller 'ChartsController', [
         @errorGeneralInfo = true
 
   @setSelectedProject = (project) =>
+    @errorGeneralInfo = false
+    @errorOverallIssues = false
+    @errorPerMonthIssues = false
+    @errorTodayIssues = false
+    @errorMyProgress = false
     @currentProject = project
     $('#datepicker').daterangepicker
       format: 'MMM/YY'
