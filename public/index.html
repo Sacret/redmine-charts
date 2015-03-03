@@ -17,6 +17,11 @@
       <div class="row">
         <project-names ng-show="chartsCtrl.projects.length" class="col-md-3 col-xs-12"></project-names>
         <project-info ng-show="chartsCtrl.currentProject" class="col-md-9 col-xs-12"></project-info>
+        <div class="col-md-9 col-xs-12" ng-hide="chartsCtrl.currentProject">
+          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorProjectsInfo">
+            <strong>Something went wrong!</strong> Can't load projects info. Please try again later
+          </div>
+        </div>
       </div>
     </div>
     <div ng-include="'templates/footer.html'"></div>

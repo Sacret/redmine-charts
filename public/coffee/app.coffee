@@ -35,9 +35,15 @@ app.controller 'ChartsController', [
   @currentProject = undefined
   @currentUser = undefined
   @signinLoading = false
+  @errorLogin = false
+  @errorProjectsInfo = false
+  @errorGeneralInfo = false
+  @errorOverallIssues = false
+  @errorPerMonthIssues = false
+  @errorTodayIssues = false
+  @errorMyProgress = false
 
   @getUser = =>
-    @site = $('#site-url').val().trim()
     @key = $('#api-key').val().trim()
     Api.key = @key
     Api.get('users/current')
@@ -45,6 +51,8 @@ app.controller 'ChartsController', [
         return unless user?
         @currentUser = user.data.user
         @getProjects()
+      .catch (error) =>
+        @errorLogin = true
 
   @getProjects = =>
     @signinLoading = true
@@ -54,6 +62,9 @@ app.controller 'ChartsController', [
         @projects = projects.data
         @projectsCount = projects.count
         @signinLoading = false
+      .catch (error) =>
+        @errorProjectsInfo = true
+        @errorGeneralInfo = true
 
   @setSelectedProject = (project) =>
     @currentProject = project
@@ -115,6 +126,8 @@ app.controller 'ChartsController', [
             data: issuesbyStatuses
           ]
         chart = $chart.highcharts()
+      .catch (error) =>
+        @errorOverallIssues = true
 
   @getIssuesByStatus = (project, status) =>
     Api.key = @key
@@ -168,6 +181,8 @@ app.controller 'ChartsController', [
           data: [todayIssuesClosed.count]
         ]
       chart = $chart.highcharts()
+    .catch (error) =>
+        @errorTodayIssues = true
 
   @getIssuesPerMonth = (project) ->
     project.perMonthIssuesLoaded = false
@@ -219,6 +234,8 @@ app.controller 'ChartsController', [
         series: series
       chart = $chart.highcharts()
       project.perMonthIssuesLoaded = true
+    .catch (error) =>
+      @errorPerMonthIssues = true
 
   @getIssuesByUser = (project) ->
     startDate = moment(project.created_on)
@@ -283,4 +300,6 @@ app.controller 'ChartsController', [
         series: series
       chart = $chart.highcharts()
       project.byUserIssuesLoaded = true
+    .catch (error) =>
+      @errorMyProgress = true
 ]
