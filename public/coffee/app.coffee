@@ -193,12 +193,12 @@ app.controller 'ChartsController', [
     project.perMonthIssuesLoaded = false
     startDate = $('#datepicker').data().daterangepicker.startDate ? moment().startOf('year')
     endDate = $('#datepicker').data().daterangepicker.endDate ? moment()
-    range = moment().range(startDate, endDate)
+    range = moment().range(startDate.startOf('month'), endDate)
     dateRanges = []
     range.by 'months', (start) ->
-      end = moment.min(start.clone().endOf('month'), endDate)
+      end = start.clone().endOf('month')
       dateRanges.push
-        start: start.format('YYYY-MM-DD')
+        start: start.clone().startOf('month').format('YYYY-MM-DD')
         end: end.format('YYYY-MM-DD')
         monthName: start.format('MMM') + '/' + start.format('YY')
 
