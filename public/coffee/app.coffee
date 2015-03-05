@@ -1,4 +1,4 @@
-app = angular.module('charts', ['charts-projects', 'angular-ladda'])
+app = angular.module('charts', ['charts-projects', 'angular-ladda', 'LocalStorageModule'])
 
 app.constant('jQuery', window.jQuery)
 app.constant('lodash', window._)
@@ -25,8 +25,8 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
 ]
 
 app.controller 'ChartsController', [
-  '$q', 'jQuery', 'lodash', 'moment', 'Api',
-, ($q, $, _, moment, Api) ->
+  '$q', 'jQuery', 'lodash', 'moment', 'Api', 'localStorageService'
+, ($q, $, _, moment, Api, localStorageService) ->
   @site = 'http://redmine.pfrus.com'
   @key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
   @projects = []
@@ -43,12 +43,23 @@ app.controller 'ChartsController', [
   @errorTodayIssues = false
   @errorMyProgress = false
 
+  @getCachedData = ->
+    @cachedKey = localStorageService.get 'api-key'
+    if @cachedKey
+      @key = @cachedKey
+      @getUser()
+
+  @logout = ->
+    localStorageService.remove 'api-key'
+    @projects = []
+
   @getUser = =>
     @key = $('#api-key').val().trim()
     Api.key = @key
     Api.get('users/current')
       .then (user) =>
         return unless user?
+        localStorageService.set 'api-key', @key
         @currentUser = user.data.user
         @getProjects()
       .catch (error) =>

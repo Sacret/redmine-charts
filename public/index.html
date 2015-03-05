@@ -10,7 +10,7 @@
     <link href="bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
     <link href="bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css" rel="stylesheet">
   </head>
-  <body ng-controller="ChartsController as chartsCtrl">
+  <body ng-controller="ChartsController as chartsCtrl" ng-init="chartsCtrl.getCachedData()">
     <div ng-include="'templates/header.html'"></div>
     <div class="container-fluid">
       <div class="container" ng-include="'templates/login-form.html'" ng-hide="chartsCtrl.projects.length"></div>

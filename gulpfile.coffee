@@ -26,6 +26,7 @@ gulp.task 'components', ->
     'bootstrap/dist/js/bootstrap.js'
     'highcharts-release/highcharts.js'
     'angular/angular.js'
+    'angular-local-storage/dist/angular-local-storage.js'
     'lodash/dist/lodash.js'
     'ladda/js/spin.js'
     'ladda/js/ladda.js'
