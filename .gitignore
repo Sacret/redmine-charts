@@ -1,3 +1,6 @@
+# npm log
+npm-debug.log
+
 # Downloaded components and modules
 bower_components
 node_modules
