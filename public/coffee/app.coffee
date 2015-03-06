@@ -46,14 +46,21 @@ app.controller 'ChartsController', [
   @login = ->
     @key = localStorageService.get('api-key')
     if @key
-      @getUser()
+      @getUser(@key)
 
   @logout = ->
     localStorageService.remove('api-key')
+    @currentProject = undefined
     @projects = []
 
-  @getUser = =>
-    if !@key
+  @setDefaultProject = () ->
+    localStorageService.set('default-project', @currentProject.id)
+
+  @isDefaultProject = () ->
+    @currentProject?.id == localStorageService.get('default-project')
+
+  @getUser = (@cachedKey) =>
+    if !@cachedKey
       @key = $('#api-key').val().trim()
     Api.key = @key
     isRemembered = $('#remember-me').prop('checked')
@@ -75,6 +82,10 @@ app.controller 'ChartsController', [
         @projects = projects.data
         @projectsCount = projects.count
         @signinLoading = false
+        if localStorageService.get('default-project')
+          defaultProject = _.find(
+            @projects, 'id': localStorageService.get('default-project'))
+          @setSelectedProject(defaultProject)
       .catch (error) =>
         @errorProjectsInfo = true
         @errorGeneralInfo = true
