@@ -158,7 +158,7 @@ app.controller 'ChartsController', [
     Api.key = @key
     $q.all([
       Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: today)
-      Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: today)
+      Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', closed_on: today)
     ]).then ([todayIssuesCreated, todayIssuesClosed]) ->
       project.todayIssuesLoaded = true
       project.todayIssuesCount = todayIssuesCreated.count + todayIssuesClosed.count
@@ -217,7 +217,7 @@ app.controller 'ChartsController', [
       q = "><#{ start }|#{ end }"
       $q.all [
         Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: q)
-        Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', updated_on: q)
+        Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', closed_on: q)
       ]
     .then (issuesPerMonth) ->
       return unless issuesPerMonth.length
@@ -269,7 +269,7 @@ app.controller 'ChartsController', [
       q = "><#{ start }|#{ end }"
       $q.all [
         Api.get('issues', project_id: project.id, limit: 1, status_id: '*', assigned_to_id: 'me', created_on: q)
-        Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', assigned_to_id: 'me', updated_on: q)
+        Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', assigned_to_id: 'me', closed_on: q)
       ]
     .then (issuesByUserPerWeek) ->
       return unless issuesByUserPerWeek.length
