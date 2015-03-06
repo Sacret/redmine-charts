@@ -115,6 +115,22 @@ app.controller 'ChartsController', [
     , (start, end) =>
       @getIssuesPerMonth(project)
     $('#datepicker').val(moment().startOf('year').format('MMM/YY') + ' - ' + moment().format('MMM/YY'))
+
+    $('#datepicker-user').daterangepicker
+      format: 'MMM/YY'
+      startDate: moment.max(moment().startOf('year'), moment(project.created_on)).toDate()
+      endDate: moment().toDate()
+      minDate: moment(project.created_on).toDate()
+      maxDate: moment().toDate()
+      showDropdowns: true
+      ranges:
+        'Last 3 Months': [moment().subtract('month', 3).startOf('month'), moment().endOf('month')]
+        'Last 6 Months': [moment().subtract('month', 6).startOf('month'), moment().endOf('month')]
+        'Last Year': [moment().subtract('month', 12).startOf('month'), moment().endOf('month')]
+    , (start, end) =>
+      @getIssuesByUser(project)
+    $('#datepicker-user').val(moment().startOf('year').format('MMM/YY') + ' - ' + moment().format('MMM/YY'))
+
     @getIssueStatuses(project)
     @getTodayIssues(project)
     @getIssuesPerMonth(project)
@@ -271,8 +287,9 @@ app.controller 'ChartsController', [
       @errorPerMonthIssues = true
 
   @getIssuesByUser = (project) ->
-    startDate = moment(project.created_on)
-    endDate = moment()
+    project.byUserIssuesLoaded = false
+    startDate = $('#datepicker-user').data().daterangepicker.startDate ? moment().startOf('year')
+    endDate = $('#datepicker-user').data().daterangepicker.endDate ? moment()
     range = moment().range(startDate, endDate)
     dateRanges = []
     range.by 'weeks', (start) ->

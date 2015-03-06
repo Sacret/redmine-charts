@@ -61,6 +61,11 @@
       <strong>Something went wrong!</strong> Can't load my progress info. Please try again later
     </div>
     <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.byUserIssuesLoaded" />
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="chartsCtrl.currentProject.byUserIssuesLoaded">
+        <input id="datepicker-user" type="text" class="form-control" name="datepicker" />
+      </div>
+    </div>
     <div id="my-issues" ng-show="chartsCtrl.currentProject.byUserIssuesLoaded"></div>
   </div>
 </div>
