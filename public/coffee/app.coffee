@@ -27,16 +27,16 @@ app.factory 'Api', ['$http', '$window', ($http, $window) ->
 app.controller 'ChartsController', [
   '$q', 'jQuery', 'lodash', 'moment', 'Api', 'localStorageService'
 , ($q, $, _, moment, Api, localStorageService) ->
-  @site = 'http://redmine.pfrus.com'
-  @key = undefined
   @projects = []
   @statuses = []
+  @key = undefined
   @projectsCount = undefined
   @currentProject = undefined
   @currentUser = undefined
   @signinLoading = false
   @errorLogin = false
   @errorProjectsInfo = false
+  @errorDefaultProjectInfo = false
   @errorGeneralInfo = false
   @errorOverallIssues = false
   @errorPerMonthIssues = false
@@ -85,12 +85,16 @@ app.controller 'ChartsController', [
         if localStorageService.get('default-project')
           defaultProject = _.find(
             @projects, 'id': localStorageService.get('default-project'))
+          @errorDefaultProjectInfo = false
           @setSelectedProject(defaultProject)
       .catch (error) =>
         @errorProjectsInfo = true
         @errorGeneralInfo = true
 
   @setSelectedProject = (project) =>
+    if !project
+      @errorDefaultProjectInfo = true
+      return
     @errorGeneralInfo = false
     @errorOverallIssues = false
     @errorPerMonthIssues = false
