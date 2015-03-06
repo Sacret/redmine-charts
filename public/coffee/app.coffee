@@ -28,7 +28,7 @@ app.controller 'ChartsController', [
   '$q', 'jQuery', 'lodash', 'moment', 'Api', 'localStorageService'
 , ($q, $, _, moment, Api, localStorageService) ->
   @site = 'http://redmine.pfrus.com'
-  @key = '261e9890fc1b2aa799f942ff2d6daa9fa691bd91'
+  @key = undefined
   @projects = []
   @statuses = []
   @projectsCount = undefined
@@ -43,23 +43,25 @@ app.controller 'ChartsController', [
   @errorTodayIssues = false
   @errorMyProgress = false
 
-  @getCachedData = ->
-    @cachedKey = localStorageService.get 'api-key'
-    if @cachedKey
-      @key = @cachedKey
+  @login = ->
+    @key = localStorageService.get('api-key')
+    if @key
       @getUser()
 
   @logout = ->
-    localStorageService.remove 'api-key'
+    localStorageService.remove('api-key')
     @projects = []
 
   @getUser = =>
-    @key = $('#api-key').val().trim()
+    if !@key
+      @key = $('#api-key').val().trim()
     Api.key = @key
+    isRemembered = $('#remember-me').prop('checked')
     Api.get('users/current')
       .then (user) =>
         return unless user?
-        localStorageService.set 'api-key', @key
+        if isRemembered
+          localStorageService.set('api-key', @key)
         @currentUser = user.data.user
         @getProjects()
       .catch (error) =>
