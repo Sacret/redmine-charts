@@ -22,8 +22,9 @@
     <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorOverallIssues">
       <strong>Something went wrong!</strong> Can't load overall issues info. Please try again later
     </div>
-    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.issuesbyStatuses.length" />
-    <div id="issues-overall" ng-show="chartsCtrl.currentProject.issuesbyStatuses.length"></div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.overallIssuesLoaded" />
+    <button type="button" class="btn btn-primary btn-xs pull-right" ng-show="chartsCtrl.currentProject.overallIssuesLoaded" title="Refresh chart" ng-click="chartsCtrl.getIssueStatuses(chartsCtrl.currentProject)"><span class="glyphicon glyphicon-refresh"></span></button>
+    <div id="issues-overall" ng-show="chartsCtrl.currentProject.overallIssuesLoaded"></div>
   </div>
 </div>
 
@@ -34,6 +35,7 @@
       <strong>Something went wrong!</strong> Can't load issues per month info. Please try again later
     </div>
     <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.perMonthIssuesLoaded" />
+    <button type="button" class="btn btn-primary btn-xs pull-right" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded" title="Refresh chart" ng-click="chartsCtrl.getIssuesPerMonth(chartsCtrl.currentProject)"><span class="glyphicon glyphicon-refresh"></span></button>
     <div class="row">
       <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded">
         <input id="datepicker" type="text" class="form-control" name="datepicker" />
@@ -50,6 +52,7 @@
       <strong>Something went wrong!</strong> Can't load today issues info. Please try again later
     </div>
     <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.todayIssuesLoaded" />
+    <button type="button" class="btn btn-primary btn-xs pull-right" ng-show="chartsCtrl.currentProject.todayIssuesLoaded" title="Refresh chart" ng-click="chartsCtrl.getTodayIssues(chartsCtrl.currentProject)"><span class="glyphicon glyphicon-refresh"></span></button>
     <div id="issues-today" ng-show="chartsCtrl.currentProject.todayIssuesLoaded"></div>
   </div>
 </div>
@@ -61,6 +64,7 @@
       <strong>Something went wrong!</strong> Can't load my progress info. Please try again later
     </div>
     <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.byUserIssuesLoaded" />
+    <button type="button" class="btn btn-primary btn-xs pull-right" ng-show="chartsCtrl.currentProject.byUserIssuesLoaded" title="Refresh chart" ng-click="chartsCtrl.getIssuesByUser(chartsCtrl.currentProject)"><span class="glyphicon glyphicon-refresh"></span></button>
     <div class="row">
       <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="chartsCtrl.currentProject.byUserIssuesLoaded">
         <input id="datepicker-user" type="text" class="form-control" name="datepicker" />

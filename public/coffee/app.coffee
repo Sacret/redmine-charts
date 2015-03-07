@@ -132,14 +132,15 @@ app.controller 'ChartsController', [
     $('#datepicker-user').val(moment().startOf('year').format('MMM/YY') + ' - ' + moment().format('MMM/YY'))
 
     @getIssueStatuses(project)
-    @getTodayIssues(project)
     @getIssuesPerMonth(project)
+    @getTodayIssues(project)
     @getIssuesByUser(project)
 
   @isSelectedProject = (project) ->
     @currentProject?.id == project.id
 
   @getIssueStatuses = (project) =>
+    project.overallIssuesLoaded = false
     Api.key = @key
     Api.get('issue_statuses')
       .then (issueStatuses) =>
@@ -175,6 +176,7 @@ app.controller 'ChartsController', [
             data: issuesbyStatuses
           ]
         chart = $chart.highcharts()
+        project.overallIssuesLoaded = true
       .catch (error) =>
         @errorOverallIssues = true
 
@@ -185,53 +187,6 @@ app.controller 'ChartsController', [
         "#{ status.name } (#{ issuesByStatus.count })"
         issuesByStatus.count
       ]
-
-  @getTodayIssues = (project) =>
-    today = moment().format('YYYY-MM-DD')
-    Api.key = @key
-    $q.all([
-      Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: today)
-      Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', closed_on: today)
-    ]).then ([todayIssuesCreated, todayIssuesClosed]) ->
-      project.todayIssuesLoaded = true
-      project.todayIssuesCount = todayIssuesCreated.count + todayIssuesClosed.count
-      $chart = $('#issues-today')
-      $chart.highcharts
-        chart:
-          type: 'column'
-        title:
-          text: null
-        xAxis:
-          categories: [
-            "Today Issues (#{ project.todayIssuesCount })"
-          ]
-        yAxis: [
-          min: 0
-          title:
-            text: 'Issues count'
-        ]
-        legend:
-          shadow: false
-        tooltip:
-          shared: true
-        plotOptions:
-          column:
-            shadow: false
-            borderWidth: 0
-            dataLabels:
-              enabled: true
-        series: [
-          name: 'Created'
-          color: 'rgba(165,170,217,1)'
-          data: [todayIssuesCreated.count]
-        ,
-          name: 'Closed'
-          color: 'rgba(153,214,13,.9)'
-          data: [todayIssuesClosed.count]
-        ]
-      chart = $chart.highcharts()
-    .catch (error) =>
-        @errorTodayIssues = true
 
   @getIssuesPerMonth = (project) ->
     project.perMonthIssuesLoaded = false
@@ -285,6 +240,53 @@ app.controller 'ChartsController', [
       project.perMonthIssuesLoaded = true
     .catch (error) =>
       @errorPerMonthIssues = true
+
+  @getTodayIssues = (project) =>
+    today = moment().format('YYYY-MM-DD')
+    Api.key = @key
+    $q.all([
+      Api.get('issues', project_id: project.id, limit: 1, status_id: '*', created_on: today)
+      Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', closed_on: today)
+    ]).then ([todayIssuesCreated, todayIssuesClosed]) ->
+      project.todayIssuesLoaded = true
+      project.todayIssuesCount = todayIssuesCreated.count + todayIssuesClosed.count
+      $chart = $('#issues-today')
+      $chart.highcharts
+        chart:
+          type: 'column'
+        title:
+          text: null
+        xAxis:
+          categories: [
+            "Today Issues (#{ project.todayIssuesCount })"
+          ]
+        yAxis: [
+          min: 0
+          title:
+            text: 'Issues count'
+        ]
+        legend:
+          shadow: false
+        tooltip:
+          shared: true
+        plotOptions:
+          column:
+            shadow: false
+            borderWidth: 0
+            dataLabels:
+              enabled: true
+        series: [
+          name: 'Created'
+          color: 'rgba(165,170,217,1)'
+          data: [todayIssuesCreated.count]
+        ,
+          name: 'Closed'
+          color: 'rgba(153,214,13,.9)'
+          data: [todayIssuesClosed.count]
+        ]
+      chart = $chart.highcharts()
+    .catch (error) =>
+        @errorTodayIssues = true
 
   @getIssuesByUser = (project) ->
     project.byUserIssuesLoaded = false
