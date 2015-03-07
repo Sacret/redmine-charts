@@ -292,10 +292,11 @@ app.controller 'ChartsController', [
     project.byUserIssuesLoaded = false
     startDate = $('#datepicker-user').data().daterangepicker.startDate ? moment().startOf('year')
     endDate = $('#datepicker-user').data().daterangepicker.endDate ? moment()
+    startDate = startDate.startOf('week')
     range = moment().range(startDate, endDate)
     dateRanges = []
     range.by 'weeks', (start) ->
-      end = moment.min(start.clone().endOf('week'), endDate)
+      end = start.clone().endOf('week')
       dateRanges.push
         start: start.format('YYYY-MM-DD')
         end: end.format('YYYY-MM-DD')
