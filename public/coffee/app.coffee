@@ -51,6 +51,7 @@ app.controller 'ChartsController', [
   @logout = ->
     localStorageService.remove('api-key')
     @currentProject = undefined
+    @currentUser = undefined
     @projects = []
 
   @setDefaultProject = () ->

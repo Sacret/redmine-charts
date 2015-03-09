@@ -13,7 +13,8 @@
   <body ng-controller="ChartsController as chartsCtrl" ng-init="chartsCtrl.login()">
     <div ng-include="'templates/header.html'"></div>
     <div class="container-fluid">
-      <div class="container" ng-include="'templates/login-form.html'" ng-hide="chartsCtrl.projects.length"></div>
+      <div class="container" ng-include="'templates/login-form.html'" ng-hide="chartsCtrl.currentUser"></div>
+      <div class="container" ng-include="'templates/description.html'" ng-hide="chartsCtrl.currentUser"></div>
       <div class="row">
         <project-names ng-show="chartsCtrl.projects.length" class="col-md-3 col-xs-12"></project-names>
         <project-info ng-show="chartsCtrl.currentProject" class="col-md-9 col-xs-12"></project-info>
@@ -25,6 +26,7 @@
             <strong>Something went wrong!</strong> Can't load default project info. Please try again later
           </div>
         </div>
+        <div class="col-md-9 col-xs-12" ng-include="'templates/description.html'" ng-show="chartsCtrl.projects.length && !chartsCtrl.currentProject"></div>
       </div>
     </div>
     <div ng-include="'templates/footer.html'"></div>
