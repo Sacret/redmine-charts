@@ -54,7 +54,10 @@ app.controller 'ChartsController', [
     @projects = []
 
   @setDefaultProject = () ->
-    localStorageService.set('default-project', @currentProject.id)
+    if @isDefaultProject()
+      localStorageService.remove('default-project')
+    else
+      localStorageService.set('default-project', @currentProject.id)
 
   @isDefaultProject = () ->
     @currentProject?.id == localStorageService.get('default-project')
