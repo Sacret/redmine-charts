@@ -1,0 +1,71 @@
+@import "variables";
+@icon-font-path: "../bower_components/bootstrap/fonts/";
+@navbar-border-radius: 0;
+@navbar-inverse-link-color: #fff;
+
+@import "bootstrap";
+
+.ng-invalid.ng-dirty {
+  border-color: #fa787e;
+}
+
+.ng-valid.ng-dirty {
+  border-color: #46be56;
+}
+
+body {
+  padding-bottom: 60px;
+  @media (max-width: @screen-md) {
+    padding-bottom: 70px;
+  }
+}
+
+.list-group-item-info:focus {
+  outline: none;
+}
+
+.highcharts-container {
+  margin: auto;
+}
+
+.img-logo {
+  height: 35px;
+  margin-top: -7px;
+  margin-right: 10px;
+}
+
+#datepicker, #datepicker-user {
+  margin-bottom: 30px;
+}
+
+.alert {
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#headingOne {
+  background: @brand-primary;
+  color: #fff;
+  cursor: pointer;
+}
+
+.badge {
+  color: @brand-primary !important;
+  background: #fff !important;
+  margin-left: 5px;
+}
+
+.glyphicon-menu-hamburger {
+  margin-top: 2px;
+}
+
+.project-description {
+  ul {
+    margin-left: 15px;
+  }
+}
+
+#login-panel {
+  margin: 20px 0 60px;
+}

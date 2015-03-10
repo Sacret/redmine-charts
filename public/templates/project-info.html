@@ -1,0 +1,75 @@
+<div class="panel panel-default" ng-show="chartsCtrl.currentProject">
+  <div class="panel-heading">General Info</div>
+  <div class="panel-body">
+    <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorGeneralInfo">
+      <strong>Something went wrong!</strong> Can't load general info. Please try again later
+    </div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject" />
+    <dl ng-show="chartsCtrl.currentProject">
+      <dt>Name</dt>
+      <dd>{{ chartsCtrl.currentProject.name }}</dd>
+      <dt ng-show="chartsCtrl.currentProject.description">Description</dt>
+      <dd ng-show="chartsCtrl.currentProject.description">{{ chartsCtrl.currentProject.description }}</dd>
+      <dt>Created</dt>
+      <dd>{{ chartsCtrl.currentProject.created_on | date:'MMM dd, yyyy' }}</dd>
+    </dl>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Overall Issues <span ng-show="chartsCtrl.currentProject.issuesOverallCount">({{ chartsCtrl.currentProject.issuesOverallCount }})</span></div>
+  <div class="panel-body">
+    <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorOverallIssues">
+      <strong>Something went wrong!</strong> Can't load overall issues info. Please try again later
+    </div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.overallIssuesLoaded" />
+    <button type="button" class="btn btn-primary btn-xs pull-right" ng-show="chartsCtrl.currentProject.overallIssuesLoaded" title="Refresh chart" ng-click="chartsCtrl.getIssueStatuses(chartsCtrl.currentProject)"><span class="glyphicon glyphicon-refresh"></span></button>
+    <div id="issues-overall" ng-show="chartsCtrl.currentProject.overallIssuesLoaded"></div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Issues Per Month</div>
+  <div class="panel-body">
+    <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorPerMonthIssues">
+      <strong>Something went wrong!</strong> Can't load issues per month info. Please try again later
+    </div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.perMonthIssuesLoaded" />
+    <button type="button" class="btn btn-primary btn-xs pull-right" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded" title="Refresh chart" ng-click="chartsCtrl.getIssuesPerMonth(chartsCtrl.currentProject)"><span class="glyphicon glyphicon-refresh"></span></button>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded">
+        <input id="datepicker" type="text" class="form-control" name="datepicker" />
+      </div>
+    </div>
+    <div id="issues-per-month" ng-show="chartsCtrl.currentProject.perMonthIssuesLoaded"></div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Today Issues</div>
+  <div class="panel-body">
+    <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorTodayIssues">
+      <strong>Something went wrong!</strong> Can't load today issues info. Please try again later
+    </div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.todayIssuesLoaded" />
+    <button type="button" class="btn btn-primary btn-xs pull-right" ng-show="chartsCtrl.currentProject.todayIssuesLoaded" title="Refresh chart" ng-click="chartsCtrl.getTodayIssues(chartsCtrl.currentProject)"><span class="glyphicon glyphicon-refresh"></span></button>
+    <div id="issues-today" ng-show="chartsCtrl.currentProject.todayIssuesLoaded"></div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">My Progress</div>
+  <div class="panel-body">
+    <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorMyProgress">
+      <strong>Something went wrong!</strong> Can't load my progress info. Please try again later
+    </div>
+    <img src="images/ajax-loader.gif" class="center-block" ng-hide="chartsCtrl.currentProject.byUserIssuesLoaded" />
+    <button type="button" class="btn btn-primary btn-xs pull-right" ng-show="chartsCtrl.currentProject.byUserIssuesLoaded" title="Refresh chart" ng-click="chartsCtrl.getIssuesByUser(chartsCtrl.currentProject)"><span class="glyphicon glyphicon-refresh"></span></button>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 col-xs-12" ng-show="chartsCtrl.currentProject.byUserIssuesLoaded">
+        <input id="datepicker-user" type="text" class="form-control" name="datepicker" />
+      </div>
+    </div>
+    <div id="my-issues" ng-show="chartsCtrl.currentProject.byUserIssuesLoaded"></div>
+  </div>
+</div>

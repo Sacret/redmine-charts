@@ -1,0 +1,29 @@
+<div class="row welcome-screen">
+  <h1 class="text-center">Welcome!</h1>
+  <div class="col-md-4 col-md-offset-4">
+    <div class="panel panel-default" id="login-panel">
+      <div class="panel-heading">Sign in and try it</div>
+      <div class="panel-body">
+        <form name="loginForm" class="form" role="form" novalidate ng-submit="loginForm.$valid && chartsCtrl.getUser()">
+          <div class="form-group">
+            <input type="url" class="form-control" id="site-url" placeholder="http://www.redmine.pfrus.com/" ng-model="user.siteUrl" disabled>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" id="api-key" placeholder="API Key" ng-model="user.apiKey" required>
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="remember-me" checked> Remember me
+              </label>
+              <button type="submit" class="btn btn-primary pull-right" ladda="chartsCtrl.signinLoading" data-style="expand-left" ng-class="{ disabled:!loginForm.$valid }"><span class="ladda-label">Sign in</span></button>
+            </div>
+          </div>
+          <div class="alert alert-danger" role="alert" ng-show="chartsCtrl.errorLogin">
+            <strong>Something went wrong!</strong> You can't access site data with this API key. Please try again later
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
