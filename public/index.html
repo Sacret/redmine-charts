@@ -19,10 +19,10 @@
         <project-names ng-show="chartsCtrl.projects.length" class="col-md-3 col-xs-12"></project-names>
         <project-info ng-show="chartsCtrl.currentProject" class="col-md-9 col-xs-12"></project-info>
         <div class="col-md-9 col-xs-12" ng-hide="chartsCtrl.currentProject">
-          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorProjectsInfo">
+          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.currentUser && chartsCtrl.errorProjectsInfo">
             <strong>Something went wrong!</strong> Can't load projects info. Please try again later
           </div>
-          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.errorDefaultProjectInfo">
+          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.currentUser && chartsCtrl.errorDefaultProjectInfo">
             <strong>Something went wrong!</strong> Can't load default project info. Please try again later
           </div>
         </div>
@@ -36,7 +36,7 @@
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-43048842-4', 'auto');
+      ga('create', 'UA-60763042-1', 'auto');
       ga('send', 'pageview');
     </script>
     <script type="text/javascript" src="js/components.js"></script>
