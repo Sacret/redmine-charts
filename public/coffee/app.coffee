@@ -33,6 +33,7 @@ app.controller 'ChartsController', [
   @projectsCount = undefined
   @currentProject = undefined
   @currentUser = undefined
+  @pageTitle = 'Login'
   @signinLoading = false
   @errorLogin = false
   @errorProjectsInfo = false
@@ -44,15 +45,25 @@ app.controller 'ChartsController', [
   @errorMyProgress = false
 
   @login = ->
+    @errorLogin = false
     @key = localStorageService.get('api-key')
     if @key
       @getUser(@key)
 
   @logout = ->
+    @errorLogin = false
     localStorageService.remove('api-key')
+    $('#api-key').val('')
     @currentProject = undefined
     @currentUser = undefined
     @projects = []
+    @pageTitle = 'Login'
+
+  @isProjectInfoLoaded = ->
+    !!@currentUser && @errorProjectsInfo
+
+  @isDefaultProjectInfoLoaded = ->
+    !!@currentUser && @errorDefaultProjectInfo
 
   @setDefaultProject = () ->
     if @isDefaultProject()
@@ -80,6 +91,7 @@ app.controller 'ChartsController', [
 
   @getProjects = =>
     @signinLoading = true
+    @pageTitle = 'Projects'
     Api.key = @key
     Api.get('projects', limit: 100)
       .then (projects) =>
@@ -105,6 +117,7 @@ app.controller 'ChartsController', [
     @errorTodayIssues = false
     @errorMyProgress = false
     @currentProject = project
+    @pageTitle = project.name
     $('#datepicker').daterangepicker
       format: 'MMM/YY'
       startDate: moment.max(moment().startOf('year'), moment(project.created_on)).toDate()
@@ -152,7 +165,7 @@ app.controller 'ChartsController', [
         $q.all @statuses.map (status) =>
           @getIssuesByStatus(project, status)
       .then (issuesbyStatuses) ->
-        project.issuesbyStatuses = issuesbyStatuses
+        project.issuesbyStatuses = _.sortBy(issuesbyStatuses, (n) -> n[1])
         project.issuesOverallCount = _(issuesbyStatuses)
           .pluck('1')
           .reduce (a, b) -> a + b
@@ -177,7 +190,7 @@ app.controller 'ChartsController', [
           series: [
             type: 'pie'
             name: 'Issues share'
-            data: issuesbyStatuses
+            data: project.issuesbyStatuses
           ]
         chart = $chart.highcharts()
         project.overallIssuesLoaded = true

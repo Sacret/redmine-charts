@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="charts">
+<html lang="en" ng-app="charts" ng-controller="ChartsController as chartsCtrl" ng-init="chartsCtrl.login()">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Redmine Charts</title>
+    <title ng-bind="chartsCtrl.pageTitle + ' | Redmine Charts' || 'Main | Redmine Charts'">Main | Redmine Charts</title>
     <link href="images/logo.ico" rel="shortcut icon" type="image/x-icon" />
     <link href="css/style.css" rel="stylesheet">
     <link href="bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
     <link href="bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css" rel="stylesheet">
   </head>
-  <body ng-controller="ChartsController as chartsCtrl" ng-init="chartsCtrl.login()">
+  <body>
     <div ng-include="'templates/header.html'"></div>
     <div class="container-fluid">
       <div class="container" ng-include="'templates/login-form.html'" ng-hide="chartsCtrl.currentUser"></div>
@@ -18,11 +18,11 @@
       <div class="row">
         <project-names ng-show="chartsCtrl.projects.length" class="col-md-3 col-xs-12"></project-names>
         <project-info ng-show="chartsCtrl.currentProject" class="col-md-9 col-xs-12"></project-info>
-        <div class="col-md-9 col-xs-12" ng-hide="chartsCtrl.currentProject">
-          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.currentUser && chartsCtrl.errorProjectsInfo">
+        <div class="col-md-9 col-xs-12">
+          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.isProjectInfoLoaded()">
             <strong>Something went wrong!</strong> Can't load projects info. Please try again later
           </div>
-          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.currentUser && chartsCtrl.errorDefaultProjectInfo">
+          <div class="alert alert-danger col-xs-12" role="alert" ng-show="chartsCtrl.isDefaultProjectInfoLoaded()">
             <strong>Something went wrong!</strong> Can't load default project info. Please try again later
           </div>
         </div>
@@ -31,13 +31,13 @@
     </div>
     <div ng-include="'templates/footer.html'"></div>
     <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      /*(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
       ga('create', 'UA-60763042-1', 'auto');
-      ga('send', 'pageview');
+      ga('send', 'pageview');*/
     </script>
     <script type="text/javascript" src="js/components.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
