@@ -36,8 +36,6 @@ app.controller 'ChartsController', [
   @pageTitle = 'Login'
   @signinLoading = false
   @errorLogin = false
-  @errorProjectsInfo = false
-  @errorDefaultProjectInfo = false
   @errorGeneralInfo = false
   @errorOverallIssues = false
   @errorPerMonthIssues = false
@@ -59,12 +57,6 @@ app.controller 'ChartsController', [
     @projects = []
     @pageTitle = 'Login'
 
-  @isProjectInfoLoaded = ->
-    !!@currentUser && @errorProjectsInfo
-
-  @isDefaultProjectInfoLoaded = ->
-    !!@currentUser && @errorDefaultProjectInfo
-
   @setDefaultProject = () ->
     if @isDefaultProject()
       localStorageService.remove('default-project')
@@ -75,6 +67,8 @@ app.controller 'ChartsController', [
     @currentProject?.id == localStorageService.get('default-project')
 
   @getUser = (@cachedKey) =>
+    $('.alert-danger-projects-info').addClass('hidden')
+    $('.alert-danger-default-project-info').addClass('hidden')
     if !@cachedKey
       @key = $('#api-key').val().trim()
     Api.key = @key
@@ -101,15 +95,14 @@ app.controller 'ChartsController', [
         if localStorageService.get('default-project')
           defaultProject = _.find(
             @projects, 'id': localStorageService.get('default-project'))
-          @errorDefaultProjectInfo = false
           @setSelectedProject(defaultProject)
       .catch (error) =>
-        @errorProjectsInfo = true
+        $('.alert-danger-projects-info').removeClass('hidden')
         @errorGeneralInfo = true
 
   @setSelectedProject = (project) =>
     if !project
-      @errorDefaultProjectInfo = true
+      $('.alert-danger-default-project-info').removeClass('hidden')
       return
     @errorGeneralInfo = false
     @errorOverallIssues = false
