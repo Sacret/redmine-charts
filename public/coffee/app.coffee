@@ -36,12 +36,11 @@ app.controller 'ChartsController', [
   @pageTitle = 'Login'
   @signinLoading = false
   @errorLogin = false
-  @errorProjectsInfo = false
-  @errorDefaultProjectInfo = false
   @errorGeneralInfo = false
   @errorOverallIssues = false
   @errorPerMonthIssues = false
   @errorTodayIssues = false
+  @errorTeamProgress = false
   @errorMyProgress = false
 
   @login = ->
@@ -59,12 +58,6 @@ app.controller 'ChartsController', [
     @projects = []
     @pageTitle = 'Login'
 
-  @isProjectInfoLoaded = ->
-    !!@currentUser && @errorProjectsInfo
-
-  @isDefaultProjectInfoLoaded = ->
-    !!@currentUser && @errorDefaultProjectInfo
-
   @setDefaultProject = () ->
     if @isDefaultProject()
       localStorageService.remove('default-project')
@@ -75,6 +68,8 @@ app.controller 'ChartsController', [
     @currentProject?.id == localStorageService.get('default-project')
 
   @getUser = (@cachedKey) =>
+    $('.alert-danger-projects-info').addClass('hidden')
+    $('.alert-danger-default-project-info').addClass('hidden')
     if !@cachedKey
       @key = $('#api-key').val().trim()
     Api.key = @key
@@ -101,20 +96,20 @@ app.controller 'ChartsController', [
         if localStorageService.get('default-project')
           defaultProject = _.find(
             @projects, 'id': localStorageService.get('default-project'))
-          @errorDefaultProjectInfo = false
           @setSelectedProject(defaultProject)
       .catch (error) =>
-        @errorProjectsInfo = true
+        $('.alert-danger-projects-info').removeClass('hidden')
         @errorGeneralInfo = true
 
   @setSelectedProject = (project) =>
     if !project
-      @errorDefaultProjectInfo = true
+      $('.alert-danger-default-project-info').removeClass('hidden')
       return
     @errorGeneralInfo = false
     @errorOverallIssues = false
     @errorPerMonthIssues = false
     @errorTodayIssues = false
+    @errorTeamProgress = false
     @errorMyProgress = false
     @currentProject = project
     @pageTitle = project.name
@@ -151,6 +146,7 @@ app.controller 'ChartsController', [
     @getIssueStatuses(project)
     @getIssuesPerMonth(project)
     @getTodayIssues(project)
+    @getTeamIssues(project)
     @getIssuesByUser(project)
 
   @isSelectedProject = (project) ->
@@ -304,6 +300,65 @@ app.controller 'ChartsController', [
       chart = $chart.highcharts()
     .catch (error) =>
         @errorTodayIssues = true
+
+  @getTeamIssues = (project) =>
+    project.teamIssuesLoaded = false
+    Api.key = @key
+    Api.get("projects/#{ project.id }/memberships", limit: 100)
+      .then (projectMembers) =>
+        @members = projectMembers.data.memberships
+        project.projectMembers = _(@members).pluck('user').pluck('name').value()
+        $q.all @members.map (member) =>
+          @getIssuesByTeamMember(project, member)
+      .then (issuesbyProjectMembers) ->
+        series = [
+          name: 'Open Issues'
+          data: _(issuesbyProjectMembers).pluck('0').value()
+        ,
+          name: 'Closed Issues'
+          data: _(issuesbyProjectMembers).pluck('1').value()
+        ]
+        $chart = $('#team-issues')
+        $chart.highcharts
+          chart:
+            type: 'bar'
+          title:
+            text: null
+          xAxis: [
+            categories: project.projectMembers
+            opposite: true
+            reversed: false
+            labels:
+              step: 1
+          ]
+          yAxis:
+            title:
+              text: null
+            labels:
+              formatter: ->
+                Math.abs(this.value)
+          tooltip:
+            formatter: ->
+              "<b>#{ this.series.name }</b> by #{ this.point.category }<br/>" +
+              'Count: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0)
+          plotOptions:
+            series:
+              stacking: 'normal'
+          series: series
+        chart = $chart.highcharts()
+        project.teamIssuesLoaded = true
+      .catch (error) =>
+        @errorTeamProgress = true
+
+  @getIssuesByTeamMember = (project, member) =>
+    Api.key = @key
+    $q.all([
+      Api.get('issues', project_id: project.id, limit: 1, status_id: 'open', assigned_to_id: member.user.id)
+      Api.get('issues', project_id: project.id, limit: 1, status_id: 'closed', assigned_to_id: member.user.id)
+    ]).then ([teamMemberIssuesCreated, teamMemberClosed]) -> [
+        -teamMemberIssuesCreated.count
+        teamMemberClosed.count
+      ]
 
   @getIssuesByUser = (project) ->
     project.byUserIssuesLoaded = false

@@ -1,5 +1,5 @@
 <div class="project-description col-xs-12" ng-class="{ 'col-md-8 col-md-offset-2':!chartsCtrl.currentUser }">
-  <p><strong>Redmine Charts</strong> is a web application which extends ProgForce Redmine with following charts: overall issues, issues per month, today issues and user's progress. Using these charts you can easily track your team's progress with the project and estimate the work done.</p>
+  <p><strong>Redmine Charts</strong> is a web application which extends ProgForce Redmine with following charts: overall issues, issues per month, today issues, team progress and current user's progress. Using these charts you can easily track your team's progress with the project and estimate the work done.</p>
   <p>The application is built using <a href="https://angularjs.org/" target="_blank">AngularJS</a> as frontend and <a href="http://expressjs.com/" target="_blank">Express</a> as backend framework. Also many useful modules and libraries were integrated, such as <a href="http://momentjs.com/" target="_blank">Moment.js</a>, <a href="http://www.highcharts.com/" target="_blank">Highcharts</a>, <a href="https://lodash.com/" target="_blank">Lodash</a> and others.</p>
   <p>To start work you just need to fill 'API key' field in the form above with your Redmine API access key from <a href="http://redmine.pfrus.com/my/account" target="_blank">account</a> page.</p>
   <p>After that you will be able to see, estimate and control issues progress.</p>
@@ -16,6 +16,10 @@
   <p>The 'Today Issues' chart provides you with the following information:</p>
   <ul class="list-unstyled">
     <li><strong>Count of open and closed issues</strong> — the number of such issues for today.</li>
+  </ul>
+  <p>The 'Team Progress' chart provides you with the following information:</p>
+  <ul class="list-unstyled">
+    <li><strong>Count of open and closed issues by project member</strong> — the number of such issues per project member.</li>
   </ul>
   <p>The 'My Progress' chart provides you with the following information:</p>
   <ul class="list-unstyled">
