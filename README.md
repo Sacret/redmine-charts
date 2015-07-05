@@ -25,6 +25,9 @@ The 'Issues Per Month' chart provides you with the following information:
 The 'Today Issues' chart provides you with the following information:
 -   *Count of open and closed issues* — the number of such issues for today.
 
+The 'Team Progress' chart provides you with the following information:
+-   *Count of open and closed issues by project member* — the number of such issues per project member.
+
 The 'My Progress' chart provides you with the following information:
 -   *Count of open and closed issues* — the number of such issues per week for current user.
 -   *Ability to choose date range* — you can manage what period of time will be shown.
