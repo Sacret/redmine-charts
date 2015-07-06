@@ -306,7 +306,7 @@ app.controller 'ChartsController', [
     Api.key = @key
     Api.get("projects/#{ project.id }/memberships", limit: 100)
       .then (projectMembers) =>
-        @members = projectMembers.data.memberships
+        @members = _.filter(projectMembers.data.memberships, (n) -> n.user)
         project.projectMembers = _(@members).pluck('user').pluck('name').value()
         $q.all @members.map (member) =>
           @getIssuesByTeamMember(project, member)
@@ -339,8 +339,7 @@ app.controller 'ChartsController', [
                 Math.abs(this.value)
           tooltip:
             formatter: ->
-              "<b>#{ this.series.name }</b> by #{ this.point.category }<br/>" +
-              'Count: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0)
+              Highcharts.numberFormat(Math.abs(this.point.y), 0) + " <b>#{ this.series.name.toLowerCase() }</b> by #{ this.point.category }<br/>"
           plotOptions:
             series:
               stacking: 'normal'
