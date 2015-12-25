@@ -3,7 +3,7 @@ redmine-charts
 
 Redmine Charts.
 
-![Image of Snowman](http://sacret.ru/sites/default/files/styles/gallery_image_full/public/portfolio/merchantz_redmine_charts.png)
+![Image of Redmine Charts](http://sacret.ru/sites/default/files/styles/gallery_image_full/public/portfolio/merchantz_redmine_charts.png)
 
 Description
 -----------
