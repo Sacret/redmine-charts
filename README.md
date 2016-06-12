@@ -35,3 +35,51 @@ The 'My Progress' chart provides you with the following information:
 -   *Ability to choose date range* — you can manage what period of time will be shown.
 
 If you have any suggestions and/or bug reports — you are welcome to our [GitHub Issues](https://github.com/Sacret/redmine-charts/issues) page. We will be happy to improve all needed functionality and fix bugs.
+
+
+Installation
+------------
+
+1. Install node
+
+2. Install gulp and bower
+
+   ```bash
+   npm install -g gulp bower
+   ```
+
+3. Clone repo
+
+   ```bash
+   git clone https://github.com/Sacret/redmine-charts.git
+   ```
+
+4. Go to the folder
+
+5. Install node modules
+
+   ```bash
+   npm install
+   ```
+
+6. Install bower components
+
+   ```bash
+   bower install
+   ```
+
+7. Build application
+
+   ```bash
+   gulp
+   ```
+
+8. Change request URI from `redmine.pfrus.com` to your domain in [routes/index.coffee](routes/index.coffee)
+
+9. Start server
+
+   ```bash
+   npm start
+   ```
+
+10. Go to [http://localhost:3000](http://localhost:3000)
